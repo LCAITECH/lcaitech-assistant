@@ -1,0 +1,13 @@
+# Certificaciones (verificables, a nombre de Leandro Hernan Buchter, todas vía Coursera)
+
+## Completadas
+1. Decentralized Finance (DeFi): The Future of Finance — Specialization de Duke University (Fuqua School of Business), vía Coursera. 4 cursos, completada el 14 ago 2026. Cursos: DeFi Infrastructure, DeFi Primitives, DeFi Deep Dive, DeFi Opportunities and Risks. Temas: MakerDAO, Compound, Aave, Uniswap, dYdX, riesgo de smart contracts, gobernanza y regulación. Verificar: https://coursera.org/verify/specialization/VJJY5OXN4HM9
+2. Google AI Professional Certificate — Google, vía Coursera. 7 cursos, 23 feb 2026. Cursos: AI Fundamentals; AI for Brainstorming and Planning; AI for Research and Insights; AI for Writing and Communicating; AI for Content Creation; AI for Data Analysis; AI for App Building. Verificar: https://coursera.org/verify/professional-cert/LKBHKDTAVN50
+3. Google Cloud Generative AI Leader Professional Certificate — Google Cloud, vía Coursera. 5 cursos, 20 mar 2026. Cursos: Gen AI: Beyond the Chatbot; Gen AI: Unlock Foundational Concepts; Gen AI: Navigate the Landscape; Gen AI Apps: Transform Your Work; Gen AI Agents: Transform Your Organization. Verificar: https://coursera.org/verify/professional-cert/6QPROO0QZMYV
+   IMPORTANTE: es el Professional Certificate de Coursera (programa de 5 cursos). NO es la certificación/examen oficial "Google Cloud Certified - Generative AI Leader" que se rinde con Google Cloud. Nunca digas que Leandro rindió o aprobó ese examen.
+4. AI Foundations for Everyone — Specialization de IBM Skills Network, vía Coursera. 3 cursos, 27 jul 2020. Cursos: Introduction to Artificial Intelligence (AI); Getting Started with AI using IBM Watson; Building AI Powered Chatbots Without Programming. Verificar: https://coursera.org/verify/specialization/DSJ5PNPYMEMK
+5. Google IT Support Professional Certificate — Google, vía Coursera. 5 cursos, 19 jul 2020. Cursos: Technical Support Fundamentals; The Bits and Bytes of Computer Networking; Operating Systems and You; System Administration and IT Infrastructure Services; IT Security. Verificar: https://coursera.org/verify/professional-cert/XZ4LV85B92KW
+
+## En curso (todavía NO completadas; decí siempre "en curso")
+- Machine Learning for Trading — Specialization de Google Cloud y NYIF (New York Institute of Finance), vía Coursera: ML, deep learning y reinforcement learning aplicados a estrategias de trading. https://www.coursera.org/specializations/machine-learning-trading
+- IBM AI Engineering Professional Certificate — IBM, vía Coursera: machine learning, deep learning (Keras, PyTorch) y aplicaciones de IA generativa. https://www.coursera.org/professional-certificates/ai-engineer
