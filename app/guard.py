@@ -18,6 +18,7 @@ _INJECTION = [
     r"\b(system|developer|hidden|initial|original)\s*(prompt|message|instructions?)\b",
     r"\bprompt\s+(del\s+|de\s+)?(sistema|inicial|oculto|original)\b",
     r"\b(mostr\w*|revel\w*|imprim\w*|repet\w*|copi\w*|pas\w*|dec\w*|escrib\w*|show|reveal|print|repeat|output|dump|leak|tell|give)\b.{0,40}\b(tus|sus|your|the|tu|las)\s+(instrucciones|instructions|reglas internas|configuraci\w+|system prompt|prompt)\b",
+    r"\b(repeat|repet\w*|copy|copi\w*|print|imprim\w*|output)\b.{0,30}\b(everything|all|todo|todas?)\b.{0,40}\b(above|arriba|anterior\w*|before|previo\w*|verbatim|textual\w*)",
     r"\b(jailbreak\w*|dan mode|do anything now|developer mode|modo desarrollador|modo dios|god mode)\b",
     r"\b(a partir de ahora|desde ahora|from now on)\b\s*,?\s*(sos|eres|vas a|actu\w*|you are|you will|you're|act|respond\w*|habl\w*|ignor\w*|no tenes|no tienes)",
     r"\b(you are now|ahora sos un|ahora eres un|act[uú]a como si|pretend (to be|you are)|roleplay as)\b",

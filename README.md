@@ -106,6 +106,7 @@ Caddy manda `X-Forwarded-For`, que el backend usa para el límite por IP. Con Cl
 python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/pytest -q                                              # modo mock: sin red ni credenciales
 LLM_PROVIDER=mock .venv/bin/uvicorn app.main:app --port 8099     # backend falso para probar el widget
+python3 scripts/battery.py http://127.0.0.1:8080                 # en la VM: 10 preguntas legítimas + 10 fuera de tema/injection con el modelo real (~USD 0,05)
 ```
 
 ## Licencia
