@@ -7,12 +7,25 @@ Backend liviano en FastAPI que responde **solo** sobre Leandro, sus servicios, p
 
 ## Qué hace
 
-- `POST /chat` `{"messages":[{"role":"user","content":"..."}], "lang":"es"|"en"}` → `{"reply":"...","lang":"es"}`
-- `GET /health` → `{"status":"ok","provider":"vertex","model":"gemini-3.1-flash-lite","accepting":true}`
-- Toda la base de conocimiento (`knowledge/*.md`, datos reales del portfolio) va en el *system prompt* (sin RAG vectorial). El prefijo es idéntico en cada pedido, así que el **caché implícito** de Gemini lo cobra con 90% de descuento cuando hay hits (mínimo 4.096 tokens; el prompt tiene ~6.200).
-- Modelo por defecto `gemini-3.1-flash-lite` (GA) con `thinking_level=minimal` y `max_output_tokens=400`. Se cambia por env (`MODEL`, `VERTEX_LOCATION`).
-  - `gemini-2.5-flash-lite` se retira el 20/10/2026 en Vertex, por eso no es el default.
-  - `gemini-3.1-flash-lite` se sirve desde `global` (o `us`/`eu`), **no** desde `us-central1`: por eso `VERTEX_LOCATION=global`.
+- `POST /chat/stream` (mismo cuerpo que `/chat`) → **SSE** (`text/event-stream`): `meta` (fuente y modelo), `delta` (texto a medida que llega), `replace`, `done` (`ttft_ms`, `ms`) o `error` (mensaje con contactos). Lo usa el widget.
+- `POST /chat` `{"messages":[{"role":"user","content":"..."}], "lang":"es"|"en"}` → `{"reply","lang","source","model"}` (misma lógica, respuesta entera).
+- `GET /health` → proveedor, modelo principal y de respaldo, `accepting`.
+
+### Velocidad (objetivo: primer texto < 2 s, respuesta completa < 5 s)
+1. **Respuestas instantáneas sin modelo** (`app/faq.py`): las preguntas sugeridas y las frecuentes (servicios, precios, bot para comunidad, ATH Intelligence, ARDC, certificados, contacto, cómo contratar, bot demo) se responden desde el servidor en milisegundos, con textos tomados de la base de conocimiento. Lo que necesita criterio (garantías, inversiones, pagos, "por qué no…", comparaciones) siempre va al modelo. El filtro anti-injection corre **antes**.
+2. **Streaming** de punta a punta: el widget muestra el texto a medida que llega.
+3. **Modelo principal + respaldo con corte rápido** (`app/llm.py`):
+   - principal `gemini-3.8-flash` en `global` (GA, el Flash más nuevo; *thinking* en `LOW`, el mínimo que admite);
+   - respaldo `gemini-3.1-flash-lite` en `us` (otro modelo y otro endpoint);
+   - si el principal no dio el primer token en **2,5 s** (`HEDGE_AFTER_S`) se lanza el respaldo en paralelo y gana el primero que responda;
+   - cada intento tiene **8 s** para el primer token (`FIRST_TOKEN_TIMEOUT_S`); 429/499/5xx/timeout pasan al otro modelo al instante; volver a un modelo que ya falló espera un *backoff* exponencial con *jitter*; máximo 3 intentos (`MAX_RETRIES=2`) y **12 s** en total (`TOTAL_BUDGET_S`);
+   - si todo falla: mensaje con los contactos de Leandro (nunca una espera larga).
+4. **Caché explícita** del *system prompt* (~6.200 tokens) en Vertex, creada en segundo plano al arrancar, TTL 1 h renovado mientras haya tráfico (`EXPLICIT_CACHE`, `CACHE_TTL_S`). Si falla, se desactiva 30 min y se sigue sin caché.
+5. Historial enviado como un único turno (con el idioma de la interfaz como pista), lo que evita errores de *thought signatures* y reintentos.
+
+`scripts/latency.py` (en la VM) mide primer token y total reales por modelo y región, compara con y sin caché, recomienda principal y respaldo, y con `--apply` los escribe en `/etc/lcaitech-assistant.env` (con backup) y reinicia el servicio.
+
+Toda la base de conocimiento (`knowledge/*.md`, datos reales del portfolio) va en el *system prompt* (sin RAG vectorial).
 
 ### Guardrails
 - Alcance cerrado: Leandro, LCA ITECH, servicios, proyectos, experiencia, contratación y conceptos tech/cripto relacionados. Lo demás (fútbol, política, tareas genéricas, código para terceros, consejos de inversión, precios futuros) se rechaza con amabilidad.
@@ -26,8 +39,8 @@ Backend liviano en FastAPI que responde **solo** sobre Leandro, sus servicios, p
 |---|---|---|
 | Por IP (CF-Connecting-IP → X-Forwarded-For → peer) | 10/min y 50/día | `IP_PER_MINUTE`, `IP_PER_DAY` |
 | Pedidos globales por día | 1.000 | `GLOBAL_REQUESTS_PER_DAY` |
-| Tokens globales por día | 3.000.000 | `GLOBAL_TOKENS_PER_DAY` |
-| **Presupuesto diario (USD estimados con `usage_metadata`)** | **0,30** | `GLOBAL_COST_USD_PER_DAY` |
+| Tokens globales por día | 8.000.000 | `GLOBAL_TOKENS_PER_DAY` |
+| **Presupuesto diario (USD estimados con `usage_metadata` y el precio del modelo que respondió)** | **1,00** | `GLOBAL_COST_USD_PER_DAY` |
 | Largo del mensaje | 800 caracteres | `MAX_MSG_CHARS` |
 | Historial enviado al modelo | últimos 10 mensajes | `MAX_HISTORY_MESSAGES` |
 | Cuerpo HTTP | 32 KB | `MAX_BODY_BYTES` |
@@ -38,19 +51,26 @@ Backend liviano en FastAPI que responde **solo** sobre Leandro, sus servicios, p
 - Los headers de IP solo se aceptan si la conexión viene de localhost/red privada (el túnel o el proxy).
 - **Privacidad:** los logs no guardan el contenido de los mensajes ni IPs, solo largo, hash de IP con sal, tokens, costo y latencia.
 
-## Costo (precios oficiales de Vertex AI, octubre 2026)
-`gemini-3.1-flash-lite`, endpoint global: USD 0,25 / 1M tokens de entrada, USD 1,50 / 1M de salida (el *thinking* se cobra como salida), USD 0,025 / 1M de entrada cacheada. Fuente: https://cloud.google.com/vertex-ai/generative-ai/pricing
+## Costo (precios oficiales de Vertex AI, consultados el 8/10/2026)
+Fuente: https://cloud.google.com/vertex-ai/generative-ai/pricing (USD por 1M tokens; el *thinking* se cobra como salida).
 
-Supuesto por mensaje: ~7.000 tokens de entrada (prompt ~6.200 + historial) y ~280 de salida.
+| Modelo | Entrada | Entrada cacheada | Salida |
+|---|---|---|---|
+| `gemini-3.8-flash` global, **precio introductorio hasta el 31/12/2026** | 0,75 | 0,075 | 3,75 |
+| `gemini-3.8-flash` global, desde el 1/1/2027 | 1,50 | 0,15 | 7,50 |
+| `gemini-3.1-flash-lite` en `us` (no global) | 0,275 | 0,0275 | 1,65 |
 
-| Escenario | Sin caché | Con caché implícito |
+Almacenamiento de la caché explícita: USD 1 por 1M tokens·hora (~USD 0,006 por hora con tráfico). `app/pricing.py` aplica el precio correcto según la fecha y el modelo que respondió.
+
+Supuesto por respuesta del modelo (estimado, a confirmar con `scripts/latency.py`): ~6.500 tokens de entrada (6.200 del prompt) y ~500 de salida + *thinking*.
+
+| Por respuesta | Sin caché | Con caché explícita |
 |---|---|---|
-| Por mensaje | USD 0,0022 | USD 0,0008 |
-| 500 mensajes/mes | ~USD 1,10 | ~USD 0,40 |
-| 5.000 mensajes/mes | ~USD 10,90 | ~USD 3,90 |
-| **Peor caso (tope diario de USD 0,30 todos los días)** | **≤ USD 9,30/mes** | |
+| 3.8 Flash (hasta 31/12/2026) | USD 0,0068 | USD 0,0026 |
+| 3.8 Flash (desde 2027) | USD 0,0135 | USD 0,0051 |
+| 3.1 Flash-Lite `us` (respaldo) | USD 0,0026 | USD 0,0011 |
 
-Sin el tope en USD, 1.000 pedidos/día con historial completo podrían costar USD 65–95 por mes. Por eso existe `GLOBAL_COST_USD_PER_DAY`. El hosting corre en la VM e2 del free tier y Cloudflare Tunnel es gratis.
+Las respuestas instantáneas (FAQ) y los bloqueos anti-injection cuestan USD 0. Con el tope de **USD 1/día** el peor caso es **USD 30–31 por mes** (≈ 390 respuestas del modelo por día con caché, ≈ 150 sin caché). El hosting corre en la VM e2 del free tier y Cloudflare Tunnel es gratis.
 
 ## Instalación en la VM (Debian 12, systemd)
 
@@ -63,7 +83,8 @@ sudo bash install_assistant.sh                # Vertex AI con la cuenta de servi
 
 El script es idempotente:
 - crea el usuario `assistant`, clona en `/opt/lcaitech-assistant`, arma el venv y escribe `/etc/lcaitech-assistant.env` (root, 600);
-- **hace una llamada real mínima al modelo** y, si falla, imprime los comandos `gcloud` exactos para arreglarlo;
+- **prueba el modelo principal y el de respaldo con streaming** (muestra el tiempo al primer texto) y, si falla, imprime los comandos `gcloud` exactos para arreglarlo;
+- al actualizar **no pisa** `/etc/lcaitech-assistant.env`: solo agrega variables nuevas con su default y migra 4 valores (`MODEL`, `MAX_OUTPUT_TOKENS`, `GLOBAL_COST_USD_PER_DAY`, `GLOBAL_TOKENS_PER_DAY`) **solo si siguen exactamente con el default viejo**, con backup previo (`--keep-config` lo evita);
 - instala el servicio `lcaitech-assistant` (127.0.0.1:8080, `MemoryMax=250M`, endurecido) y prueba `/health` y `/chat`.
 
 No toca otros servicios de la VM.
@@ -106,7 +127,8 @@ Caddy manda `X-Forwarded-For`, que el backend usa para el límite por IP. Con Cl
 python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/pytest -q                                              # modo mock: sin red ni credenciales
 LLM_PROVIDER=mock .venv/bin/uvicorn app.main:app --port 8099     # backend falso para probar el widget
-python3 scripts/battery.py http://127.0.0.1:8080                 # en la VM: 10 preguntas legítimas + 10 fuera de tema/injection con el modelo real (~USD 0,05)
+python3 scripts/battery.py http://127.0.0.1:8080                 # en la VM: 10 legítimas + 10 fuera de tema/injection por SSE, con fuente, modelo, primer texto y total
+sudo .venv/bin/python scripts/latency.py --env-file /etc/lcaitech-assistant.env [--apply]   # en la VM: latencia real por modelo/región
 ```
 
 ## Licencia
@@ -121,8 +143,9 @@ Portfolio chat assistant for Leandro Buchter / LCA ITECH (https://portfolio.lcai
 **Backend**
 - FastAPI + uvicorn, about 80 MB RSS.
 - Gemini on Vertex AI through `google-genai` (`vertexai=True`, ADC from the VM service account). `GOOGLE_API_KEY` is supported as an alternative, and a `mock` provider covers tests.
-- The full knowledge base (`knowledge/*.md`) is placed in the system prompt, so Gemini implicit caching can bill the repeated prefix at 10% of the price.
-- Default model `gemini-3.1-flash-lite` on location `global`, with minimal thinking and 400 max output tokens.
+- The full knowledge base (`knowledge/*.md`) is placed in the system prompt, cached explicitly on Vertex (1 h TTL, refreshed while there is traffic).
+- **Speed:** SSE streaming (`POST /chat/stream`); instant server-side answers for the suggested and frequent questions (no model call); primary `gemini-3.8-flash` (global, thinking LOW) with fallback `gemini-3.1-flash-lite` (us); the fallback is started in parallel if the primary has no first token after 2.5 s; 8 s per attempt, 12 s total budget, then a helpful message with contacts.
+- `scripts/latency.py` measures real time-to-first-token and total per model/region on the VM and can apply the fastest compliant choice.
 
 **Guardrails**
 - Scope limited to Leandro, his services, projects, experience and how to hire him.
@@ -131,7 +154,7 @@ Portfolio chat assistant for Leandro Buchter / LCA ITECH (https://portfolio.lcai
 
 **Limits**
 - 10 messages/min and 50/day per IP.
-- Global daily caps on requests, tokens and **estimated USD cost** (default USD 0.30/day, so at most about USD 9.30/month).
+- Global daily caps on requests, tokens and **estimated USD cost** (default USD 1/day, priced with the model that actually answered, so at most about USD 31/month).
 - 800-character messages and a 10-message history.
 - CORS and Origin restricted to the portfolio.
 - State in sqlite; logs never contain message text or raw IPs.

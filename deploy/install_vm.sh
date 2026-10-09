@@ -5,6 +5,7 @@
 #   sudo bash install_vm.sh --api-key      # usar una GOOGLE_API_KEY en vez de Vertex/ADC (se pide oculta)
 #   sudo bash install_vm.sh --vertex       # volver a Vertex AI (ADC) si antes usaste --api-key
 #   sudo bash install_vm.sh --cloudflared  # además instala cloudflared (Cloudflare Tunnel) y pide el token del túnel
+#   sudo bash install_vm.sh --keep-config  # no migrar valores por defecto viejos (solo agrega variables nuevas)
 #
 # Qué hace: git/python3-venv/curl si faltan, usuario de sistema 'assistant', código en /opt/lcaitech-assistant,
 # venv, config en /etc/lcaitech-assistant.env (root, 600), servicio systemd 'lcaitech-assistant' escuchando
@@ -28,17 +29,19 @@ step() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 ok()   { printf '    \033[32m✔\033[0m %s\n' "$*"; }
 warn() { printf '    \033[33m⚠\033[0m %s\n' "$*"; }
 die()  { printf '\n\033[31m✖ %s\033[0m\n' "$*" >&2; exit 1; }
-usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; }
 md() { curl -fsS -m 2 -H 'Metadata-Flavor: Google' "$MD/$1" 2>/dev/null || true; }
 
 USE_API_KEY=0
 FORCE_VERTEX=0
 WITH_CLOUDFLARED=0
+KEEP_CONFIG=0
 for arg in "$@"; do
   case "$arg" in
     --api-key) USE_API_KEY=1 ;;
     --vertex) FORCE_VERTEX=1 ;;
     --cloudflared) WITH_CLOUDFLARED=1 ;;
+    --keep-config) KEEP_CONFIG=1 ;;
     -h|--help) usage; exit 0 ;;
     *) die "Opción desconocida: $arg (usá --help)" ;;
   esac
@@ -68,6 +71,22 @@ set_env() {
 }
 env_has() { [ -f "$ENV_FILE" ] && grep -qE "^$1=.+" "$ENV_FILE"; }
 set_default() { env_has "$1" || set_env "$1" "$2"; }
+env_get() { sed -n "s/^$1=//p" "$ENV_FILE" 2>/dev/null | tail -1; }
+BACKED_UP=""
+# migrate KEY OLD NEW: solo si el valor actual es EXACTAMENTE el default viejo del instalador
+# (o sea, nadie lo cambió a mano). Hace backup del env file antes del primer cambio.
+migrate() {
+  local key="$1" old="$2" new="$3"
+  [ "$KEEP_CONFIG" = "1" ] && return 0
+  [ "$(env_get "$key")" = "$old" ] || return 0
+  if [ -z "$BACKED_UP" ]; then
+    BACKED_UP="${ENV_FILE}.bak-$(date +%Y%m%d-%H%M%S)"
+    ( umask 077; cp -p "$ENV_FILE" "$BACKED_UP" )
+    ok "backup de la config: $BACKED_UP"
+  fi
+  set_env "$key" "$new"
+  ok "migrado $key: $old → $new (era el default anterior)"
+}
 
 # ---------- 0. chequeos ----------
 step "0/8 Chequeos"
@@ -121,6 +140,11 @@ if [ -d "$APP_DIR/.git" ]; then
   git -C "$APP_DIR" checkout --quiet "$BRANCH"
   git -C "$APP_DIR" reset --quiet --hard "origin/$BRANCH"
   ok "actualizado a $(git -C "$APP_DIR" log -1 --format='%h %s')"
+  # Si este instalador cambió en el update, seguir con la versión nueva (bash sigue leyendo la vieja).
+  if [ -z "${LCA_REEXEC:-}" ] && [ -f "$APP_DIR/deploy/install_vm.sh" ] && ! cmp -s "$0" "$APP_DIR/deploy/install_vm.sh"; then
+    ok "el instalador cambió: continúo con la versión nueva"
+    exec env LCA_REEXEC=1 bash "$APP_DIR/deploy/install_vm.sh" "$@"
+  fi
 elif [ -e "$APP_DIR" ] && [ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ]; then
   die "$APP_DIR existe y no es un repo git. Movelo o borralo y volvé a correr el script."
 else
@@ -155,17 +179,33 @@ project="$(md project/project-id)"
 sa_email="$(md instance/service-accounts/default/email)"
 if [ -n "$project" ]; then ok "VM de GCP detectada: proyecto $project · cuenta de servicio ${sa_email:-ninguna}"; fi
 if [ -n "$project" ]; then set_default VERTEX_PROJECT "$project"; fi
+# Defaults viejos (v1) -> nuevos. Solo cambian si siguen con el valor viejo exacto.
+migrate MODEL gemini-3.1-flash-lite gemini-3.8-flash
+migrate MAX_OUTPUT_TOKENS 400 1024
+migrate GLOBAL_COST_USD_PER_DAY 0.30 1.00
+migrate GLOBAL_TOKENS_PER_DAY 3000000 8000000
 set_default VERTEX_LOCATION global
-set_default MODEL gemini-3.1-flash-lite
+set_default MODEL gemini-3.8-flash
 set_default THINKING_LEVEL minimal
-set_default MAX_OUTPUT_TOKENS 400
+set_default MAX_OUTPUT_TOKENS 1024
+set_default FALLBACK_MODEL gemini-3.1-flash-lite
+set_default FALLBACK_LOCATION us
+set_default FIRST_TOKEN_TIMEOUT_S 8
+set_default HEDGE_AFTER_S 2.5
+set_default STREAM_IDLE_TIMEOUT_S 8
+set_default TOTAL_BUDGET_S 12
+set_default MAX_RETRIES 2
+set_default REQUEST_TIMEOUT_S 30
+set_default EXPLICIT_CACHE 1
+set_default CACHE_TTL_S 3600
+set_default FAQ_ENABLED 1
 set_default ALLOWED_ORIGINS https://portfolio.lcaitech.com
 set_default ALLOW_LOCALHOST 1
 set_default IP_PER_MINUTE 10
 set_default IP_PER_DAY 50
 set_default GLOBAL_REQUESTS_PER_DAY 1000
-set_default GLOBAL_TOKENS_PER_DAY 3000000
-set_default GLOBAL_COST_USD_PER_DAY 0.30
+set_default GLOBAL_TOKENS_PER_DAY 8000000
+set_default GLOBAL_COST_USD_PER_DAY 1.00
 set_default MAX_MSG_CHARS 800
 set_default MAX_HISTORY_MESSAGES 10
 set_default STATE_DB "/var/lib/${SERVICE}/assistant.db"
@@ -184,10 +224,10 @@ elif [ "$FORCE_VERTEX" = "1" ]; then
 else
   set_default LLM_PROVIDER vertex
 fi
-ok "config lista (root:root, permisos 600). Proveedor: $(sed -n 's/^LLM_PROVIDER=//p' "$ENV_FILE")"
+ok "config lista (root:root, permisos 600). Proveedor: $(env_get LLM_PROVIDER) · principal $(env_get MODEL)@$(env_get VERTEX_LOCATION) · respaldo $(env_get FALLBACK_MODEL)@$(env_get FALLBACK_LOCATION) · tope US\$ $(env_get GLOBAL_COST_USD_PER_DAY)/día"
 
 # ---------- 6. prueba real del modelo ----------
-step "6/8 Prueba del modelo (una llamada mínima)"
+step "6/8 Prueba del modelo principal y del respaldo (streaming, mide el primer texto)"
 model_ok=0
 if [ "$SKIP_CHECK" = "1" ]; then
   warn "salteada (SKIP_CHECK=1)"
@@ -257,10 +297,11 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 done
 if [ -n "$health" ]; then ok "/health → $health"; else warn "/health no responde. Mirá: sudo journalctl -u $SERVICE -n 50"; fi
 if [ -n "$health" ] && [ "$model_ok" = "1" ]; then
-  code="$(curl -sS -m 40 -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/chat" \
+  res="$(curl -sS -m 30 -o /dev/null -w '%{http_code} %{time_total}' -X POST "http://127.0.0.1:$PORT/chat" \
     -H 'Origin: https://portfolio.lcaitech.com' -H 'Content-Type: application/json' \
-    -d '{"lang":"es","messages":[{"role":"user","content":"¿Qué servicios ofrece Leandro?"}]}' || true)"
-  if [ "$code" = "200" ]; then ok "POST /chat de prueba → 200"; else warn "POST /chat de prueba → $code (mirá el journal)"; fi
+    -d '{"lang":"es","messages":[{"role":"user","content":"Contame en una frase qué experiencia tiene con bots de Telegram."}]}' || true)"
+  code="${res%% *}"
+  if [ "$code" = "200" ]; then ok "POST /chat de prueba (modelo) → 200 en ${res#* } s"; else warn "POST /chat de prueba → ${res:-sin respuesta} (mirá el journal)"; fi
 fi
 if [ -f "$ENV_FILE" ] && grep -q '^GOOGLE_API_KEY=.' "$ENV_FILE" 2>/dev/null; then
   if journalctl -u "$SERVICE" -n 300 --no-pager -o cat 2>/dev/null | grep -qF -f <(sed -n 's/^GOOGLE_API_KEY=//p' "$ENV_FILE"); then
@@ -315,6 +356,8 @@ Comandos útiles:
   Estado:            systemctl status $SERVICE
   Salud:             curl -s http://127.0.0.1:$PORT/health
   Probar el modelo:  cd $APP_DIR && sudo .venv/bin/python -m app.check --env-file $ENV_FILE
+  Medir latencias:   cd $APP_DIR && sudo .venv/bin/python scripts/latency.py --env-file $ENV_FILE [--apply]
+  Batería de prueba: cd $APP_DIR && python3 scripts/battery.py
   Editar límites:    sudo nano $ENV_FILE && sudo systemctl restart $SERVICE
   Actualizar:        sudo bash $APP_DIR/deploy/install_vm.sh
   Apagar el chat:    sudo systemctl stop $SERVICE   (el widget muestra los contactos)

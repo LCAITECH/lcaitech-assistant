@@ -2,7 +2,8 @@
 
     python -m app.check [--env-file /etc/lcaitech-assistant.env]
 
-Exit 0 = the model answered. Never prints secrets.
+Streams a tiny answer from the primary and the fallback target and prints time to
+first token and total. Exit 0 = at least one answered. Never prints secrets.
 """
 from __future__ import annotations
 
@@ -52,7 +53,7 @@ def diagnose(err: str, provider: str, model: str, location: str) -> str:
         if "api key not valid" in e or "api_key_invalid" in e:
             out.append("La API key es inválida. Generá una nueva y volvé a correr el instalador con --api-key.")
         elif "not found" in e or "404" in e:
-            out.append(f"El modelo '{model}' no está disponible con esta key. Probá MODEL=gemini-2.5-flash-lite o revisá el nombre.")
+            out.append(f"El modelo '{model}' no está disponible con esta key. Probá MODEL=gemini-3.1-flash-lite o revisá el nombre.")
         else:
             out.append("Revisá la key, la facturación del proyecto de la key y el nombre del modelo.")
         return "\n".join(out)
@@ -73,7 +74,7 @@ def diagnose(err: str, provider: str, model: str, location: str) -> str:
         out.append(f"  gcloud projects add-iam-policy-binding {project} \\\n      --member=serviceAccount:{sa} --role=roles/aiplatform.user")
         out.append("  (si recién lo agregaste, esperá 1–2 minutos y reintentá)")
     elif "not found" in e or "404" in e:
-        out.append(f"El modelo '{model}' no existe en la ubicación '{location}'. gemini-3.1-flash-lite solo está en 'global' (o 'us'/'eu').")
+        out.append(f"El modelo '{model}' no existe en la ubicación '{location}'. Los Gemini 3.x Flash / Flash-Lite GA están en 'global', 'us' y 'eu' (no en us-central1).")
         out.append("  Revisá VERTEX_LOCATION=global y MODEL en /etc/lcaitech-assistant.env")
     elif "billing" in e:
         out.append(f"El proyecto {project} no tiene facturación activa (los créditos necesitan una cuenta de facturación vinculada).")
@@ -88,6 +89,30 @@ def diagnose(err: str, provider: str, model: str, location: str) -> str:
     return "\n".join(out)
 
 
+async def _probe(tg, system, history) -> tuple[str, float, float, str]:
+    """Stream one short answer; returns (status, ttft_s, total_s, text_or_error)."""
+    import time
+
+    from .llm import AttemptError
+
+    t0 = time.monotonic()
+    ttft, parts = 0.0, []
+    try:
+        async def consume():
+            nonlocal ttft
+            async for text, _ in tg.stream(system, history, "es"):
+                if text and not ttft:
+                    ttft = time.monotonic() - t0
+                parts.append(text)
+
+        await asyncio.wait_for(consume(), timeout=30)
+    except AttemptError as e:
+        return "error", ttft, time.monotonic() - t0, f"{e.code} {e.message}"
+    except asyncio.TimeoutError:
+        return "error", ttft, time.monotonic() - t0, "timeout 30s"
+    return "ok", ttft, time.monotonic() - t0, "".join(parts).strip()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--env-file")
@@ -96,13 +121,13 @@ def main() -> int:
         load_env_file(args.env_file)
     from .config import load_settings
     from .guard import Msg
-    from .llm import LLMError, make_provider, resolve_provider
+    from .llm import make_targets, resolve_provider
 
     s = load_settings()
-    s.max_output_tokens = 16
+    s.max_output_tokens = 256
+    s.explicit_cache = False
     provider = resolve_provider(s)
-    where = f"{provider} · model={s.model}" + (f" · location={s.vertex_location}" if provider == "vertex" else "")
-    print(f"Probando el modelo ({where})…")
+    print(f"Probando el modelo principal y el de respaldo ({provider})…")
     if provider == "vertex":
         scopes = metadata("instance/service-accounts/default/scopes")
         if scopes and "cloud-platform" not in scopes:
@@ -110,18 +135,28 @@ def main() -> int:
             print(diagnose("scope", provider, s.model, s.vertex_location))
             return 2
     try:
-        p = make_provider(s)
-        res = asyncio.run(p.generate("Respond with the single word OK.", [Msg("user", "ping")]))
-    except LLMError as e:
-        print("✖ Falló la llamada al modelo: " + str(e)[:300])
-        print(diagnose(str(e), provider, s.model, s.vertex_location))
-        return 1
+        targets = make_targets(s)
     except Exception as e:
         print(f"✖ Falló la inicialización: {type(e).__name__}: {str(e)[:200]}")
         print(diagnose(str(e), provider, s.model, s.vertex_location))
         return 1
-    print(f"✔ El modelo respondió ({res.prompt_tokens} tokens in / {res.output_tokens} out): {res.text[:40]!r}")
-    return 0
+    system = "Respond with the single word OK."
+    results = []
+    for i, tg in enumerate(targets):
+        st, ttft, total, info = asyncio.run(_probe(tg, system, [Msg("user", "ping")]))
+        role = "principal" if i == 0 else "respaldo"
+        if st == "ok":
+            print(f"✔ {role} {tg.label}: primer texto {ttft:.2f} s · total {total:.2f} s · respuesta {info[:20]!r}")
+        else:
+            print(f"✖ {role} {tg.label}: {info[:300]}")
+            print(diagnose(info, provider, getattr(tg, 'model', s.model), getattr(tg, 'location', s.vertex_location)))
+        results.append(st == "ok")
+    if results and results[0]:
+        return 0
+    if any(results):
+        print("⚠ El principal falló pero el respaldo responde: el asistente funciona, revisá MODEL/VERTEX_LOCATION.")
+        return 0
+    return 1
 
 
 if __name__ == "__main__":

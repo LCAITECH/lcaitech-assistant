@@ -44,3 +44,29 @@ def ask(c, text, lang="es", origin=ORIGIN, ip="203.0.113.7", history=None):
     if origin:
         headers["Origin"] = origin
     return c.post("/chat", json={"messages": msgs, "lang": lang}, headers=headers)
+
+
+def set_targets(main, *targets):
+    """Replace the model targets of a freshly imported app.main with test doubles."""
+    from app.llm import Router
+
+    main._router = Router(main.S, list(targets))
+    return main._router
+
+
+def sse(c, text, lang="es", origin=ORIGIN, ip="203.0.113.7", history=None):
+    """POST /chat/stream and parse the SSE events -> list of (event, data)."""
+    import json
+
+    msgs = (history or []) + [{"role": "user", "content": text}]
+    headers = {"CF-Connecting-IP": ip}
+    if origin:
+        headers["Origin"] = origin
+    r = c.post("/chat/stream", json={"messages": msgs, "lang": lang}, headers=headers)
+    events, ev = [], None
+    for line in r.text.splitlines():
+        if line.startswith("event: "):
+            ev = line[7:]
+        elif line.startswith("data: "):
+            events.append((ev, json.loads(line[6:])))
+    return r, events

@@ -34,14 +34,28 @@ def _list(name: str, default: str) -> list[str]:
 class Settings:
     # LLM
     provider: str = ""  # vertex | apikey | mock ("" = auto)
-    model: str = "gemini-3.1-flash-lite"
+    model: str = "gemini-3.8-flash"
     vertex_project: str = ""
     vertex_location: str = "global"
-    thinking_level: str = "minimal"  # minimal|low|medium|high|off
-    max_output_tokens: int = 400
+    thinking_level: str = "minimal"  # lowest the model supports is used (3.7/3.8 Flash: low); 2.5: off => budget 0
+    max_output_tokens: int = 1024  # thinking tokens count against this limit
     temperature: float | None = None
-    llm_timeout_s: float = 25.0
     max_concurrent_llm: int = 4
+    # Fallback target (different model and/or endpoint). Empty FALLBACK_MODEL disables it.
+    fallback_model: str = "gemini-3.1-flash-lite"
+    fallback_location: str = "us"
+    # Latency budget: time to FIRST token per attempt, gap between chunks, whole pre-first-token budget.
+    first_token_timeout_s: float = 8.0
+    stream_idle_timeout_s: float = 8.0
+    total_budget_s: float = 12.0
+    hedge_after_s: float = 2.5  # start the fallback in parallel if no first token yet (0 = off)
+    max_retries: int = 2  # extra attempts after the first one (fallback counts as one)
+    request_timeout_s: float = 30.0  # hard HTTP cap for a full streamed answer
+    # Explicit Vertex context cache for the system prompt (created lazily, TTL refreshed while there is traffic)
+    explicit_cache: bool = True
+    cache_ttl_s: int = 3600
+    # Server-side instant answers for suggested / frequent questions
+    faq_enabled: bool = True
 
     # Input limits
     max_msg_chars: int = 800
@@ -53,11 +67,8 @@ class Settings:
     ip_per_minute: int = 10
     ip_per_day: int = 50
     global_requests_per_day: int = 1000
-    global_tokens_per_day: int = 3_000_000
-    global_cost_usd_per_day: float = 0.30
-    price_input_per_m: float = 0.25
-    price_cached_per_m: float = 0.025
-    price_output_per_m: float = 1.50
+    global_tokens_per_day: int = 8_000_000
+    global_cost_usd_per_day: float = 1.00
     day_tz: str = "America/Argentina/Buenos_Aires"
 
     # HTTP
@@ -76,14 +87,24 @@ def load_settings() -> Settings:
     here = os.path.dirname(os.path.abspath(__file__))
     return Settings(
         provider=os.environ.get("LLM_PROVIDER", "").strip().lower(),
-        model=os.environ.get("MODEL", "gemini-3.1-flash-lite").strip(),
+        model=os.environ.get("MODEL", "gemini-3.8-flash").strip(),
         vertex_project=(os.environ.get("VERTEX_PROJECT") or os.environ.get("GOOGLE_CLOUD_PROJECT") or "").strip(),
         vertex_location=os.environ.get("VERTEX_LOCATION", "global").strip(),
         thinking_level=os.environ.get("THINKING_LEVEL", "minimal").strip().lower(),
-        max_output_tokens=_int("MAX_OUTPUT_TOKENS", 400),
+        max_output_tokens=_int("MAX_OUTPUT_TOKENS", 1024),
         temperature=float(temp) if temp else None,
-        llm_timeout_s=_float("LLM_TIMEOUT_S", 25.0),
         max_concurrent_llm=_int("MAX_CONCURRENT_LLM", 4),
+        fallback_model=os.environ.get("FALLBACK_MODEL", "gemini-3.1-flash-lite").strip(),
+        fallback_location=os.environ.get("FALLBACK_LOCATION", "us").strip(),
+        first_token_timeout_s=_float("FIRST_TOKEN_TIMEOUT_S", 8.0),
+        stream_idle_timeout_s=_float("STREAM_IDLE_TIMEOUT_S", 8.0),
+        total_budget_s=_float("TOTAL_BUDGET_S", 12.0),
+        hedge_after_s=_float("HEDGE_AFTER_S", 2.5),
+        max_retries=_int("MAX_RETRIES", 2),
+        request_timeout_s=_float("REQUEST_TIMEOUT_S", 30.0),
+        explicit_cache=_bool("EXPLICIT_CACHE", True),
+        cache_ttl_s=_int("CACHE_TTL_S", 3600),
+        faq_enabled=_bool("FAQ_ENABLED", True),
         max_msg_chars=_int("MAX_MSG_CHARS", 800),
         max_history_messages=_int("MAX_HISTORY_MESSAGES", 10),
         max_assistant_chars=_int("MAX_ASSISTANT_CHARS", 1500),
@@ -91,11 +112,8 @@ def load_settings() -> Settings:
         ip_per_minute=_int("IP_PER_MINUTE", 10),
         ip_per_day=_int("IP_PER_DAY", 50),
         global_requests_per_day=_int("GLOBAL_REQUESTS_PER_DAY", 1000),
-        global_tokens_per_day=_int("GLOBAL_TOKENS_PER_DAY", 3_000_000),
-        global_cost_usd_per_day=_float("GLOBAL_COST_USD_PER_DAY", 0.30),
-        price_input_per_m=_float("PRICE_INPUT_PER_M", 0.25),
-        price_cached_per_m=_float("PRICE_CACHED_PER_M", 0.025),
-        price_output_per_m=_float("PRICE_OUTPUT_PER_M", 1.50),
+        global_tokens_per_day=_int("GLOBAL_TOKENS_PER_DAY", 8_000_000),
+        global_cost_usd_per_day=_float("GLOBAL_COST_USD_PER_DAY", 1.00),
         day_tz=os.environ.get("DAY_TZ", "America/Argentina/Buenos_Aires"),
         allowed_origins=_list("ALLOWED_ORIGINS", "https://portfolio.lcaitech.com"),
         allow_localhost=_bool("ALLOW_LOCALHOST", True),
