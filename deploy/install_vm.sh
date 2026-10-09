@@ -5,7 +5,8 @@
 #   sudo bash install_vm.sh --api-key      # usar una GOOGLE_API_KEY en vez de Vertex/ADC (se pide oculta)
 #   sudo bash install_vm.sh --vertex       # volver a Vertex AI (ADC) si antes usaste --api-key
 #   sudo bash install_vm.sh --cloudflared  # además instala cloudflared (Cloudflare Tunnel) y pide el token del túnel
-#   sudo bash install_vm.sh --keep-config  # no migrar valores por defecto viejos (solo agrega variables nuevas)
+#   sudo bash install_vm.sh --keep-config  # no migrar defaults viejos ni elegir respaldo por medición (solo agrega variables)
+#   sudo bash install_vm.sh --no-measure   # no medir latencias para elegir el modelo de respaldo
 #
 # Qué hace: git/python3-venv/curl si faltan, usuario de sistema 'assistant', código en /opt/lcaitech-assistant,
 # venv, config en /etc/lcaitech-assistant.env (root, 600), servicio systemd 'lcaitech-assistant' escuchando
@@ -24,24 +25,29 @@ PORT="${PORT:-8080}"
 SIMULATE="${SIMULATE:-0}"      # solo para pruebas (permite correr sin root)
 SKIP_CHECK="${SKIP_CHECK:-0}"  # solo para pruebas (saltea la llamada real al modelo)
 MD="http://metadata.google.internal/computeMetadata/v1"
+# Huella del instalador que arrancó: si el update la cambia, se re-ejecuta la versión nueva
+# (comparar rutas no sirve: en la VM $0 ES el archivo que el git reset reemplaza).
+SELF_SUM="$(sha256sum "$0" 2>/dev/null | cut -d' ' -f1 || true)"
 
 step() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 ok()   { printf '    \033[32m✔\033[0m %s\n' "$*"; }
 warn() { printf '    \033[33m⚠\033[0m %s\n' "$*"; }
 die()  { printf '\n\033[31m✖ %s\033[0m\n' "$*" >&2; exit 1; }
-usage() { sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; }
 md() { curl -fsS -m 2 -H 'Metadata-Flavor: Google' "$MD/$1" 2>/dev/null || true; }
 
 USE_API_KEY=0
 FORCE_VERTEX=0
 WITH_CLOUDFLARED=0
 KEEP_CONFIG=0
+NO_MEASURE=0
 for arg in "$@"; do
   case "$arg" in
     --api-key) USE_API_KEY=1 ;;
     --vertex) FORCE_VERTEX=1 ;;
     --cloudflared) WITH_CLOUDFLARED=1 ;;
     --keep-config) KEEP_CONFIG=1 ;;
+    --no-measure) NO_MEASURE=1 ;;
     -h|--help) usage; exit 0 ;;
     *) die "Opción desconocida: $arg (usá --help)" ;;
   esac
@@ -141,7 +147,8 @@ if [ -d "$APP_DIR/.git" ]; then
   git -C "$APP_DIR" reset --quiet --hard "origin/$BRANCH"
   ok "actualizado a $(git -C "$APP_DIR" log -1 --format='%h %s')"
   # Si este instalador cambió en el update, seguir con la versión nueva (bash sigue leyendo la vieja).
-  if [ -z "${LCA_REEXEC:-}" ] && [ -f "$APP_DIR/deploy/install_vm.sh" ] && ! cmp -s "$0" "$APP_DIR/deploy/install_vm.sh"; then
+  new_sum="$(sha256sum "$APP_DIR/deploy/install_vm.sh" 2>/dev/null | cut -d' ' -f1 || true)"
+  if [ -z "${LCA_REEXEC:-}" ] && [ -n "$new_sum" ] && [ "$new_sum" != "$SELF_SUM" ]; then
     ok "el instalador cambió: continúo con la versión nueva"
     exec env LCA_REEXEC=1 bash "$APP_DIR/deploy/install_vm.sh" "$@"
   fi
@@ -184,12 +191,13 @@ migrate MODEL gemini-3.1-flash-lite gemini-3.8-flash
 migrate MAX_OUTPUT_TOKENS 400 1024
 migrate GLOBAL_COST_USD_PER_DAY 0.30 1.00
 migrate GLOBAL_TOKENS_PER_DAY 3000000 8000000
+migrate FALLBACK_LOCATION us global   # v0.2.0: 3.1 Flash-Lite en "us" medido en 15,7 s al primer texto
 set_default VERTEX_LOCATION global
 set_default MODEL gemini-3.8-flash
 set_default THINKING_LEVEL minimal
 set_default MAX_OUTPUT_TOKENS 1024
 set_default FALLBACK_MODEL gemini-3.1-flash-lite
-set_default FALLBACK_LOCATION us
+set_default FALLBACK_LOCATION global
 set_default FIRST_TOKEN_TIMEOUT_S 8
 set_default HEDGE_AFTER_S 2.5
 set_default STREAM_IDLE_TIMEOUT_S 8
@@ -236,6 +244,17 @@ elif (cd "$APP_DIR" && "$APP_DIR/.venv/bin/python" -m app.check --env-file "$ENV
 else
   warn "El modelo todavía no responde. Arriba están los comandos exactos para arreglarlo."
   warn "El servicio igual se instala: hasta que lo arregles, el chat muestra los contactos de Leandro."
+fi
+
+# ---------- 6b. respaldo más rápido según medición ----------
+if [ "$model_ok" = "1" ] && [ "$KEEP_CONFIG" != "1" ] && [ "$NO_MEASURE" != "1" ]; then
+  step "6b Elegir el modelo de respaldo más rápido (mide Flash-Lite en global/us/eu, ~1–2 min, ~US\$ 0,05)"
+  if (cd "$APP_DIR" && "$APP_DIR/.venv/bin/python" scripts/latency.py --env-file "$ENV_FILE" \
+        --fallback-only --runs 2 --ttft-timeout 6 --apply --no-restart); then
+    ok "respaldo: $(env_get FALLBACK_MODEL)@$(env_get FALLBACK_LOCATION)"
+  else
+    warn "no se pudo medir; queda el respaldo $(env_get FALLBACK_MODEL)@$(env_get FALLBACK_LOCATION)"
+  fi
 fi
 
 # ---------- 7. servicio ----------

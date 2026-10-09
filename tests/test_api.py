@@ -8,7 +8,7 @@ def test_health(client):
     assert r.status_code == 200
     j = r.json()
     assert j["status"] == "ok" and j["provider"] == "mock" and j["accepting"] is True
-    assert j["model"] == "gemini-3.8-flash" and j["fallback"] == "gemini-3.1-flash-lite@us"
+    assert j["model"] == "gemini-3.8-flash" and j["fallback"] == "gemini-3.1-flash-lite@global"
 
 
 def test_chat_ok_es_and_en(client):

@@ -16,7 +16,7 @@ Backend liviano en FastAPI que responde **solo** sobre Leandro, sus servicios, p
 2. **Streaming** de punta a punta: el widget muestra el texto a medida que llega.
 3. **Modelo principal + respaldo con corte rápido** (`app/llm.py`):
    - principal `gemini-3.8-flash` en `global` (GA, el Flash más nuevo; *thinking* en `LOW`, el mínimo que admite);
-   - respaldo `gemini-3.1-flash-lite` en `us` (otro modelo y otro endpoint);
+   - respaldo Flash-Lite elegido **por medición** al instalar (`latency.py --fallback-only`: 3.1 y 3.5 Flash-Lite en `global`, `us` y `eu`; gana el de menor primer texto que nunca superó el corte). Default `gemini-3.1-flash-lite` en `global` (en la VM, `us` tardó 15,7 s al primer texto);
    - si el principal no dio el primer token en **2,5 s** (`HEDGE_AFTER_S`) se lanza el respaldo en paralelo y gana el primero que responda;
    - cada intento tiene **8 s** para el primer token (`FIRST_TOKEN_TIMEOUT_S`); 429/499/5xx/timeout pasan al otro modelo al instante; volver a un modelo que ya falló espera un *backoff* exponencial con *jitter*; máximo 3 intentos (`MAX_RETRIES=2`) y **12 s** en total (`TOTAL_BUDGET_S`);
    - si todo falla: mensaje con los contactos de Leandro (nunca una espera larga).
@@ -58,7 +58,7 @@ Fuente: https://cloud.google.com/vertex-ai/generative-ai/pricing (USD por 1M tok
 |---|---|---|---|
 | `gemini-3.8-flash` global, **precio introductorio hasta el 31/12/2026** | 0,75 | 0,075 | 3,75 |
 | `gemini-3.8-flash` global, desde el 1/1/2027 | 1,50 | 0,15 | 7,50 |
-| `gemini-3.1-flash-lite` en `us` (no global) | 0,275 | 0,0275 | 1,65 |
+| `gemini-3.1-flash-lite` global (en `us`/`eu`: +10%) | 0,25 | 0,025 | 1,50 |
 
 Almacenamiento de la caché explícita: USD 1 por 1M tokens·hora (~USD 0,006 por hora con tráfico). `app/pricing.py` aplica el precio correcto según la fecha y el modelo que respondió.
 
@@ -68,7 +68,7 @@ Supuesto por respuesta del modelo (estimado, a confirmar con `scripts/latency.py
 |---|---|---|
 | 3.8 Flash (hasta 31/12/2026) | USD 0,0068 | USD 0,0026 |
 | 3.8 Flash (desde 2027) | USD 0,0135 | USD 0,0051 |
-| 3.1 Flash-Lite `us` (respaldo) | USD 0,0026 | USD 0,0011 |
+| 3.1 Flash-Lite global (respaldo) | USD 0,0024 | USD 0,0010 |
 
 Las respuestas instantáneas (FAQ) y los bloqueos anti-injection cuestan USD 0. Con el tope de **USD 1/día** el peor caso es **USD 30–31 por mes** (≈ 390 respuestas del modelo por día con caché, ≈ 150 sin caché). El hosting corre en la VM e2 del free tier y Cloudflare Tunnel es gratis.
 
@@ -144,7 +144,7 @@ Portfolio chat assistant for Leandro Buchter / LCA ITECH (https://portfolio.lcai
 - FastAPI + uvicorn, about 80 MB RSS.
 - Gemini on Vertex AI through `google-genai` (`vertexai=True`, ADC from the VM service account). `GOOGLE_API_KEY` is supported as an alternative, and a `mock` provider covers tests.
 - The full knowledge base (`knowledge/*.md`) is placed in the system prompt, cached explicitly on Vertex (1 h TTL, refreshed while there is traffic).
-- **Speed:** SSE streaming (`POST /chat/stream`); instant server-side answers for the suggested and frequent questions (no model call); primary `gemini-3.8-flash` (global, thinking LOW) with fallback `gemini-3.1-flash-lite` (us); the fallback is started in parallel if the primary has no first token after 2.5 s; 8 s per attempt, 12 s total budget, then a helpful message with contacts.
+- **Speed:** SSE streaming (`POST /chat/stream`); instant server-side answers for the suggested and frequent questions (no model call); primary `gemini-3.8-flash` (global, thinking LOW) with a Flash-Lite fallback chosen by measurement at install time (default `gemini-3.1-flash-lite` on global); the fallback is started in parallel if the primary has no first token after 2.5 s; 8 s per attempt, 12 s total budget, then a helpful message with contacts.
 - `scripts/latency.py` measures real time-to-first-token and total per model/region on the VM and can apply the fastest compliant choice.
 
 **Guardrails**

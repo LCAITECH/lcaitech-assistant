@@ -43,7 +43,7 @@ class Settings:
     max_concurrent_llm: int = 4
     # Fallback target (different model and/or endpoint). Empty FALLBACK_MODEL disables it.
     fallback_model: str = "gemini-3.1-flash-lite"
-    fallback_location: str = "us"
+    fallback_location: str = "global"
     # Latency budget: time to FIRST token per attempt, gap between chunks, whole pre-first-token budget.
     first_token_timeout_s: float = 8.0
     stream_idle_timeout_s: float = 8.0
@@ -95,7 +95,7 @@ def load_settings() -> Settings:
         temperature=float(temp) if temp else None,
         max_concurrent_llm=_int("MAX_CONCURRENT_LLM", 4),
         fallback_model=os.environ.get("FALLBACK_MODEL", "gemini-3.1-flash-lite").strip(),
-        fallback_location=os.environ.get("FALLBACK_LOCATION", "us").strip(),
+        fallback_location=os.environ.get("FALLBACK_LOCATION", "global").strip(),
         first_token_timeout_s=_float("FIRST_TOKEN_TIMEOUT_S", 8.0),
         stream_idle_timeout_s=_float("STREAM_IDLE_TIMEOUT_S", 8.0),
         total_budget_s=_float("TOTAL_BUDGET_S", 12.0),
