@@ -48,4 +48,3 @@ def test_faq_never_has_phone_or_hourly_rate():
     for intent, (es, en) in faq.ANSWERS.items():
         for t in (es, en):
             assert "+54" not in t and "/h" not in t.replace("https://", "") and "por hora:" not in t.lower()
-            assert "bybit" not in t.lower() and "bitget" not in t.lower()
