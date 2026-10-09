@@ -270,7 +270,9 @@ def make_targets(s: Settings) -> list:
     if p == "mock":
         primary = MockTarget("mock-primary@local", first_delay_s=float(os.environ.get("MOCK_DELAY_MS", "0")) / 1000,
                              fail_code=int(os.environ["MOCK_PRIMARY_FAIL"]) if os.environ.get("MOCK_PRIMARY_FAIL") else None)
-        fallback = MockTarget("mock-fallback@local")
+        chunk = float(os.environ.get("MOCK_CHUNK_MS", "20")) / 1000
+        primary.chunk_delay_s = chunk
+        fallback = MockTarget("mock-fallback@local", chunk_delay_s=chunk)
         if os.environ.get("MOCK_FAIL") == "1":
             primary.fail_code = fallback.fail_code = 503
         return [primary, fallback]
