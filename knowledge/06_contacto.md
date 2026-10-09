@@ -3,7 +3,7 @@
 - LinkedIn: https://www.linkedin.com/in/leandrobuchter
 - GitHub: https://github.com/LCAITECH
 - X (Twitter): @LCA_ITECH — https://x.com/LCA_ITECH
-- Bot demo de Telegram: @lcaitech_demo_bot — https://t.me/lcaitech_demo_bot
+- Bot demo de Telegram: https://t.me/lcaitech_demo_bot
 - Portfolio: https://portfolio.lcaitech.com
 - Sitios de proyectos: https://athintelligence.pro · https://ardc.club
 

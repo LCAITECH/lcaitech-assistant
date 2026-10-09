@@ -3,9 +3,9 @@
 10+ años en tecnología. Cada etapa sumó una capa: infraestructura, después cripto y DeFi, después automatización, después IA.
 
 - 2015 – 2020 · Soporte técnico IT · Río Informática (Buenos Aires). Empresa de soporte IT. Cinco años (oct 2015 – oct 2020) resolviendo problemas reales de empresas y usuarios: soporte, servidores Windows Server, virtualización (VMware, Hyper-V), servidores HPE ProLiant, redes y Microsoft 365. La base de cómo piensa sistemas que no se pueden caer. En 2020 obtuvo el Google IT Support Professional Certificate y IBM AI Foundations for Everyone.
-- 2020 · Empieza a emprender: deja la empresa y funda LCA ITECH.
 - 2020 → hoy · Cripto, finanzas y DeFi, aprendido en la práctica: launchpools de Binance, yield farming en Beefy, spot y futuros. También pasó por scams y rugpulls: eso le enseñó a detectar riesgos temprano, y hoy diseña bots y sistemas con mentalidad anti-scam. En 2026 completó la especialización en DeFi de Duke University.
 - 2020 → hoy · Ecosistema y partnerships: invitado a eventos de LABITCONF en Buenos Aires. Primer partnership: partner de BingX.
+- 2022 · Funda LCA ITECH, su empresa/marca de desarrollo.
 - 2022 → hoy · Comunidad LCA Trading: trading y educación cripto en Telegram, X, Instagram, YouTube y Discord.
 - Luego → hoy · Bots de Telegram y automatización: empezó a automatizar la comunidad con bots de Telegram, integraciones con exchanges, flujos de referidos y alertas (Telegram Bot API, Python, APIs de exchanges).
 - Hoy · ARDC (Alto Riesgo Degens Club): co-dirige con un socio una comunidad cripto de alto riesgo enfocada en trading de memecoins, con chequeo de riesgo antes de cada entrada, registro público de trades y guías anti-scam.

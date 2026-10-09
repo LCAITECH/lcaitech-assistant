@@ -1,7 +1,7 @@
 # Perfil: Leandro Buchter / LCA ITECH
 
 - Nombre: Leandro Buchter (en certificados figura como Leandro Hernan Buchter). Le dicen Lean.
-- Marca/empresa: LCA ITECH, fundada por Leandro en 2020. LCA ITECH es una marca registrada en el INPI (Argentina).
+- Marca/empresa: LCA ITECH, fundada por Leandro en 2022 (está en cripto desde 2020, antes de fundarla). LCA ITECH es una marca registrada en el INPI (Argentina).
 - Rol: Backend & Automation Engineer. Founder & Lead Engineer de LCA ITECH. Desde marzo de 2025 también trabaja como consultor independiente de automatización e IA.
 - Lema del portfolio: "Crypto + AI + APIs + Automation + Cloud".
 - Qué hace: construye sistemas completos para proyectos cripto y equipos tech: datos de mercado, bots de Telegram, agentes de IA y automatizaciones, desde la fuente de datos hasta el servidor donde corre.
@@ -12,7 +12,7 @@
 - Portfolio: https://portfolio.lcaitech.com
 
 ## Propuesta de valor ("No una pieza suelta. El sistema completo.")
-Empezó en 2015 en soporte técnico IT para empresas y en 2020 fundó LCA ITECH y se metió de lleno en cripto. Hoy construye productos con Python, APIs e IA, y tiene un certificado en DeFi de Duke University. Por eso puede conectar los datos, el backend, la IA y la infraestructura, y mantenerlo funcionando: una persona que entiende todo el flujo.
+Empezó en 2015 en soporte técnico IT para empresas (Río Informática, 2015–2020); en 2020 se metió de lleno en cripto (DeFi, launchpools, yield farming) y en 2022 fundó LCA ITECH. Hoy construye productos con Python, APIs e IA, y tiene un certificado en DeFi de Duke University. Por eso puede conectar los datos, el backend, la IA y la infraestructura, y mantenerlo funcionando: una persona que entiende todo el flujo.
 
 Cuatro áreas:
 1. Datos cripto y APIs: precios, ATH, unlocks, sentimiento y datos on-chain, guardados y servidos por una API REST propia del cliente.

@@ -21,13 +21,13 @@ Motor de decisión open source que ayuda a elegir el modelo de IA correcto segú
 ## ARDC · Alto Riesgo Degens Club — https://ardc.club
 Comunidad de habla hispana de cripto de alto riesgo, enfocada en trading de memecoins, que Leandro co-dirige con un socio. Primero el riesgo: antes de cada entrada se revisan liquidez, holders, permisos del contrato (mint, freeze, honeypot) y liquidez bloqueada. Tiene un analizador de tokens gratuito con análisis de riesgo con IA, un registro público de trades (ganadores y perdedores) y guías anti-scam. Redes: Solana, BNB Chain, Base. Es una comunidad de alto riesgo: no es asesoramiento financiero ni garantiza resultados.
 
-## LCA ITECH / LCA Trading — 2020 → hoy — https://x.com/LCA_ITECH
-LCA ITECH es la empresa que Leandro fundó en 2020. LCA Trading es su comunidad de trading y educación cripto (desde 2022) en Telegram, X, Instagram, YouTube y Discord, donde construye y prueba en la vida real: bots de Telegram, dashboards, integraciones con exchanges y sistemas de referidos.
+## LCA ITECH / LCA Trading — 2022 → hoy — https://x.com/LCA_ITECH
+LCA ITECH es la empresa que Leandro fundó en 2022 (él ya estaba en cripto desde 2020: DeFi, launchpools, yield farming). LCA Trading es su comunidad de trading y educación cripto (desde 2022) en Telegram, X, Instagram, YouTube y Discord, donde construye y prueba en la vida real: bots de Telegram, dashboards, integraciones con exchanges y sistemas de referidos.
 
 ## LCA-GPT — herramienta interna
 Interfaz web interna con ruteo de IA: cada consulta va al modelo más adecuado (Gemini, Claude u OpenAI) según la tarea y el costo. No es un producto público.
 
-## Bot demo de Telegram — online — https://t.me/lcaitech_demo_bot (@lcaitech_demo_bot)
+## Bot demo de Telegram — online — https://t.me/lcaitech_demo_bot
 Bot público para probar en vivo lo que Leandro construye, en castellano e inglés. Comandos: /precio btc (precio y variación 24 h), /ath eth (distancia al ATH), /feargreed (índice Fear & Greed), /whales btc (trades grandes recientes en MEXC), /ask (agente que responde preguntas frecuentes sobre cripto), /servicios. Cada respuesta muestra su fuente de datos (CoinGecko, MEXC, alternative.me). Código abierto (MIT): https://github.com/LCAITECH/lcaitech-demo-bot. Corre 24/7 en una VM de Google Cloud con systemd. Es un demo técnico: no da señales ni consejos de inversión.
 
 ## Este asistente virtual

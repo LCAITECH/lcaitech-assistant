@@ -35,3 +35,21 @@ def test_prompt_is_big_enough_for_implicit_cache():
 
     # Gemini 3 implicit caching needs >= 4096 tokens; ~4 chars/token is conservative for ES text.
     assert (len(RULES) + len(KB)) / 4 > 4096
+
+
+def test_founding_year_is_2022():
+    from app.prompt import RULES
+
+    assert "fundada por Leandro en 2022" in KB and "fundó en 2022" in KB
+    assert not re.search(r"(fund\w+|founded)( por Leandro)? en 2020|en 2020 fund|2020 · \w+ \w+: deja la empresa|LCA ITECH / LCA Trading — 2020", KB + RULES, re.I)
+    assert "2022" in RULES
+    assert "cripto desde 2020" in KB
+
+
+def test_links_are_full_https_urls():
+    import app.faq as faq
+
+    src = KB + open(faq.__file__, encoding="utf-8").read()
+    assert not re.search(r"\]\(", KB), "no markdown links in the knowledge base"
+    assert not re.search(r"(?<!https://)(?<![/\w])t\.me/", src), "t.me links must be full https:// URLs"
+    assert "https://t.me/lcaitech_demo_bot" in KB
