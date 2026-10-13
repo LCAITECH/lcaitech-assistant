@@ -4,11 +4,14 @@ Precio cerrado por proyecto, acordado después de una llamada corta. Los precios
 
 ## Para proyectos cripto
 
+### P0 · Starter: un bot o una automatización — desde USD 250 · ~1 semana
+Un bot de alertas básico para Telegram (precios, distancia al ATH, resumen diario) o un proceso repetitivo automatizado de punta a punta. Ideal para empezar a trabajar juntos.
+
 ### P1 · Community Alert Bot — desde USD 600 · 1–2 semanas
 Bot de Telegram (Discord opcional) para tu comunidad: alertas de precio y porcentaje, distancia al ATH, token unlocks próximos, Fear & Greed, movimientos de ballenas (umbral configurable) y resumen diario automático al canal. Panel admin simple (alta y baja de tokens, umbrales y horarios). Ingeniería de producción: reintentos, deduplicación de alertas, logging, alertas de caída y backups. Deploy en VM Linux con Docker. Entregable: bot en producción, repo con README, guía de admin y 30 días de soporte.
 
 ### P2 · Market Data API + Dashboard — desde USD 2,500 · 3–5 semanas
-Tu propio pipeline de datos de mercado (APIs públicas y de exchanges, opcionalmente on-chain), base de datos histórica, API REST (con API keys, rate limit y documentación OpenAPI) y dashboard web simple, basado en el motor de ATH Intelligence (marca blanca). Métricas como distancia al ATH, Recovery Score, calendario de unlocks, BTC vs otros activos. Jobs programados, monitoreo y backups. Entregable: API desplegada, base de datos, dashboard, docs y handoff técnico.
+Un pipeline de datos de mercado a medida, construido para las fuentes del cliente (APIs públicas y de exchanges, opcionalmente on-chain), base de datos histórica, API REST (con API keys, rate limit y documentación OpenAPI) y dashboard web simple. Métricas como distancia al ATH, calendario de unlocks, BTC vs otros activos. Jobs programados, monitoreo y backups. Entregable: API desplegada, base de datos, dashboard, docs y handoff técnico.
 
 ### P3 · Onboarding & Referral Automation — desde USD 1,200 · 2–3 semanas
 Onboarding en Telegram: verificación anti-bot, bienvenida, links de referido, verificación de UID (cuando la API del exchange lo permite), acceso VIP automático, recordatorios y tracking de conversión (en base de datos o Google Sheets). Opcional: verificación de holders (token/NFT) y roles en Discord.

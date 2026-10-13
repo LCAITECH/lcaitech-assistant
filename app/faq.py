@@ -9,14 +9,16 @@ from __future__ import annotations
 import re
 import unicodedata
 
-PACKAGES_ES = """- **P1 Community Alert Bot**: desde USD 600 (1–2 semanas)
+PACKAGES_ES = """- **P0 Starter: un bot o una automatización**: desde USD 250 (~1 semana)
+- **P1 Community Alert Bot**: desde USD 600 (1–2 semanas)
 - **P2 Market Data API + Dashboard**: desde USD 2,500 (3–5 semanas)
 - **P3 Onboarding & Referral Automation**: desde USD 1,200 (2–3 semanas)
 - **P4 AI Support Agent**: desde USD 1,500 (2–4 semanas)
 - **P5 Partner técnico part-time**: desde USD 1,500/mes
 - **P6 Automatización operativa con IA**: desde USD 800 (1–3 semanas)
 - **P7 Asistente IA interno + estrategia de modelos**: desde USD 2,000 (2–4 semanas)"""
-PACKAGES_EN = """- **P1 Community Alert Bot**: from USD 600 (1–2 weeks)
+PACKAGES_EN = """- **P0 Starter: one bot or one automation**: from USD 250 (~1 week)
+- **P1 Community Alert Bot**: from USD 600 (1–2 weeks)
 - **P2 Market Data API + Dashboard**: from USD 2,500 (3–5 weeks)
 - **P3 Onboarding & Referral Automation**: from USD 1,200 (2–3 weeks)
 - **P4 AI Support Agent**: from USD 1,500 (2–4 weeks)
