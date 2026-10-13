@@ -21,7 +21,7 @@ def test_no_hourly_rate():
 
 
 def test_from_prices_present():
-    for p in ["USD 600", "USD 2,500", "USD 1,200", "USD 1,500", "USD 800", "USD 2,000"]:
+    for p in ["USD 250", "USD 600", "USD 2.500", "USD 1.200", "USD 1.500", "USD 800", "USD 2.000"]:
         assert p in KB
 
 
@@ -53,3 +53,18 @@ def test_links_are_full_https_urls():
     assert not re.search(r"\]\(", KB), "no markdown links in the knowledge base"
     assert not re.search(r"(?<!https://)(?<![/\w])t\.me/", src), "t.me links must be full https:// URLs"
     assert "https://t.me/lcaitech_demo_bot" in KB
+
+
+def test_packages_match_site_no_invented_features():
+    svc = open("knowledge/02_servicios.md", encoding="utf-8").read()
+    assert "P0 · ~1 semana · Starter: un bot o una automatización · desde USD 250" in svc
+    assert "El paquete más barato es **P0" in svc
+    pkgs = svc.split("## Para proyectos cripto")[1].split("## Paquete más barato")[0]
+    for bad in ["Panel admin", "Docker", "Discord opcional", "VM Linux"]:
+        assert bad not in pkgs
+
+
+def test_prompt_cheapest_rule():
+    from app import prompt
+    src = open(prompt.__file__, encoding="utf-8").read()
+    assert "MÁS BARATO es P0 Starter, desde USD 250" in src

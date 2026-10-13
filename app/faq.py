@@ -11,12 +11,12 @@ import unicodedata
 
 PACKAGES_ES = """- **P0 Starter: un bot o una automatización**: desde USD 250 (~1 semana)
 - **P1 Community Alert Bot**: desde USD 600 (1–2 semanas)
-- **P2 Market Data API + Dashboard**: desde USD 2,500 (3–5 semanas)
-- **P3 Onboarding & Referral Automation**: desde USD 1,200 (2–3 semanas)
-- **P4 AI Support Agent**: desde USD 1,500 (2–4 semanas)
-- **P5 Partner técnico part-time**: desde USD 1,500/mes
+- **P2 Market Data API + Dashboard**: desde USD 2.500 (3–5 semanas)
+- **P3 Onboarding & Referral Automation**: desde USD 1.200 (2–3 semanas)
+- **P4 AI Support Agent**: desde USD 1.500 (2–4 semanas)
+- **P5 Partner técnico part-time**: desde USD 1.500/mes
 - **P6 Automatización operativa con IA**: desde USD 800 (1–3 semanas)
-- **P7 Asistente IA interno + estrategia de modelos**: desde USD 2,000 (2–4 semanas)"""
+- **P7 Asistente IA interno + estrategia de modelos**: desde USD 2.000 (2–4 semanas)"""
 PACKAGES_EN = """- **P0 Starter: one bot or one automation**: from USD 250 (~1 week)
 - **P1 Community Alert Bot**: from USD 600 (1–2 weeks)
 - **P2 Market Data API + Dashboard**: from USD 2,500 (3–5 weeks)
@@ -40,8 +40,12 @@ ANSWERS: dict[str, dict[str, str]] = {
         + "\nTerms: written scope, 50% upfront (milestones on larger projects), payment in USDC/USDT or bank transfer, and 30 days of support. For a quote, email itech.lca@gmail.com.",
     },
     "bot_price": {
-        "es": "Para una comunidad, el paquete es **P1 Community Alert Bot**: bot de Telegram (Discord opcional) con alertas de precio, distancia al ATH, token unlocks, Fear & Greed, movimientos de ballenas y resumen diario. **Desde USD 600**, 1–2 semanas, con 30 días de soporte. El precio final se cotiza tras una llamada corta: escribile a itech.lca@gmail.com. Podés probar el bot demo: https://t.me/lcaitech_demo_bot",
-        "en": "For a community, the package is **P1 Community Alert Bot**: a Telegram bot (Discord optional) with price alerts, distance to ATH, token unlocks, Fear & Greed, whale moves and a daily summary. **From USD 600**, 1–2 weeks, with 30 days of support. The final price is quoted after a short call: email itech.lca@gmail.com. Try the demo bot: https://t.me/lcaitech_demo_bot",
+        "es": "Para una comunidad, el paquete es **P1 Community Alert Bot**: bot de Telegram con alertas de precio, distancia al ATH, token unlocks, Fear & Greed, movimientos de ballenas y resumen diario. **Desde USD 600**, 1–2 semanas, con 30 días de soporte. El precio final se cotiza tras una llamada corta: escribile a itech.lca@gmail.com. Podés probar el bot demo: https://t.me/lcaitech_demo_bot",
+        "en": "For a community, the package is **P1 Community Alert Bot**: a Telegram bot with price alerts, distance to ATH, token unlocks, Fear & Greed, whale moves and a daily summary. **From USD 600**, 1–2 weeks, with 30 days of support. The final price is quoted after a short call: email itech.lca@gmail.com. Try the demo bot: https://t.me/lcaitech_demo_bot",
+    },
+    "cheapest": {
+        "es": "El paquete más barato es **P0 · Starter: un bot o una automatización**, **desde USD 250** (~1 semana): un bot de alertas básico para Telegram (precios, distancia al ATH, resumen diario) o un proceso repetitivo automatizado de punta a punta. Ideal para empezar a trabajar juntos. El precio final se cierra con alcance por escrito: escribile a itech.lca@gmail.com.",
+        "en": "The cheapest package is **P0 · Starter: one bot or one automation**, **from USD 250** (~1 week): a basic Telegram alert bot (prices, distance to ATH, daily summary) or one repetitive process automated end to end. Ideal to start working together. The final price is set with a written scope: email itech.lca@gmail.com.",
     },
     "ath": {
         "es": "**ATH Intelligence** (https://athintelligence.pro) es el producto propio de Leandro, online. Responde una pregunta: ¿puede un activo volver de verdad a su máximo histórico (ATH) después del supply que se emitió desde entonces? Guarda el market cap y el supply de cada ATH, puntúa cada activo con un **Recovery Score** determinista (distancia al ATH, inflación del supply y tamaño) y expone todo por una API REST. Hecho con Python, FastAPI, PostgreSQL, Docker y GCP. Es contexto, no consejo financiero.",
@@ -81,7 +85,9 @@ SUGGESTED = {
 }
 
 _PRICE = r"\b(precios?|cuanto (cuesta|sale|cobra\w*|vale)|tarifas?|presupuesto|cotiza\w*|costo|price|prices|pricing|how much|cost|costs|rates?|quote)\b"
+_CHEAP = r"\b(mas barat\w*|mas economic\w*|menor precio|cheapest|least expensive|lowest price\w*|cheaper|entry level|mas accesible)\b"
 INTENTS: list[tuple[str, str]] = [
+    ("cheapest", _CHEAP),
     ("bot_price", r"\bbot\b.*" + _PRICE + "|" + _PRICE + r".*\bbot\b"),
     ("prices", _PRICE),
     ("services", r"\b(servicios?|services?|que (hace|ofrece|ofreces)|what (does|do) (he|you|leandro) (do|offer)|paquetes|packages)\b"),
@@ -133,6 +139,8 @@ def match(text: str, ui_lang: str) -> tuple[str, str] | None:
     if len(norm.split()) > 12 or _NEEDS_MODEL.search(norm + " "):
         return None
     hits = [name for name, rx in _INTENT_RE if rx.search(norm)]
+    if "cheapest" in hits:
+        hits = ["cheapest"]
     if "bot_price" in hits:
         hits = [h for h in hits if h not in ("prices", "demobot")]
     specific = [h for h in hits if h in ("bot_price", "ath", "ardc", "demobot", "certs")]

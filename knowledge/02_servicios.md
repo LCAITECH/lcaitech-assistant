@@ -4,37 +4,41 @@ Precio cerrado por proyecto, acordado después de una llamada corta. Los precios
 
 ## Para proyectos cripto
 
-### P0 · Starter: un bot o una automatización — desde USD 250 · ~1 semana
+### P0 · ~1 semana · Starter: un bot o una automatización · desde USD 250
 Un bot de alertas básico para Telegram (precios, distancia al ATH, resumen diario) o un proceso repetitivo automatizado de punta a punta. Ideal para empezar a trabajar juntos.
 
-### P1 · Community Alert Bot — desde USD 600 · 1–2 semanas
-Bot de Telegram (Discord opcional) para tu comunidad: alertas de precio y porcentaje, distancia al ATH, token unlocks próximos, Fear & Greed, movimientos de ballenas (umbral configurable) y resumen diario automático al canal. Panel admin simple (alta y baja de tokens, umbrales y horarios). Ingeniería de producción: reintentos, deduplicación de alertas, logging, alertas de caída y backups. Deploy en VM Linux con Docker. Entregable: bot en producción, repo con README, guía de admin y 30 días de soporte.
+### P1 · 1–2 semanas · Community Alert Bot · desde USD 600
+Bot de Telegram para tu comunidad: alertas de precio, distancia al ATH, token unlocks, Fear & Greed, movimientos de ballenas y resumen diario.
 
-### P2 · Market Data API + Dashboard — desde USD 2,500 · 3–5 semanas
-Un pipeline de datos de mercado a medida, construido para las fuentes del cliente (APIs públicas y de exchanges, opcionalmente on-chain), base de datos histórica, API REST (con API keys, rate limit y documentación OpenAPI) y dashboard web simple. Métricas como distancia al ATH, calendario de unlocks, BTC vs otros activos. Jobs programados, monitoreo y backups. Entregable: API desplegada, base de datos, dashboard, docs y handoff técnico.
+### P2 · 3–5 semanas · Market Data API + Dashboard · desde USD 2.500
+Pipeline de datos de mercado a medida, base de datos, API REST y dashboard web, construido para las fuentes de datos del cliente.
 
-### P3 · Onboarding & Referral Automation — desde USD 1,200 · 2–3 semanas
-Onboarding en Telegram: verificación anti-bot, bienvenida, links de referido, verificación de UID (cuando la API del exchange lo permite), acceso VIP automático, recordatorios y tracking de conversión (en base de datos o Google Sheets). Opcional: verificación de holders (token/NFT) y roles en Discord.
+### P3 · 2–3 semanas · Onboarding & Referral Automation · desde USD 1.200
+Onboarding en Telegram, links de referido, verificación de UID (cuando la API del exchange lo permite), acceso VIP y tracking de conversión.
 
-### P4 · AI Support Agent — desde USD 1,500 · 2–4 semanas
-Agente de IA para Telegram/Discord que responde desde tu documentación (docs, FAQ, whitepaper, anuncios) en ES/EN/PT, con protecciones anti-scam (no da consejo financiero, nunca pide seed ni manda DMs de "soporte") y derivación a un humano. Selección de modelo y costo con Model Compass. Logs y métricas de uso y costo. Los costos de la API del LLM los paga el cliente aparte.
+### P4 · 2–4 semanas · AI Support Agent · desde USD 1.500
+Agente de IA para Telegram/Discord que responde desde la documentación del cliente en ES/EN/PT, con protecciones anti-scam y derivación a un humano.
 
-### P5 · Partner técnico part-time — desde USD 1,500 / mes
-Un bloque mensual de horas para mantener y hacer crecer tus bots, integraciones con exchanges, pipelines de datos e infraestructura (GCP, Docker, monitoreo). Reporte semanal. Disponibilidad acordada en horario UTC-3.
+### P5 · mensual · Partner técnico part-time · desde USD 1.500/mes
+Bloque mensual de horas para mantener y hacer crecer bots, integraciones, pipelines de datos e infraestructura. Reporte semanal.
 
 ## IA y automatización para empresas
 
-### P6 · Automatización operativa con IA — desde USD 800 · 1–3 semanas
-Automatiza 1–3 procesos repetitivos: formularios, mails o mensajes clasificados con IA y enviados a tus planillas o CRM, reportes y alertas. Python + Make + APIs, con reintentos, logging y alertas de error. Entregable: automatizaciones funcionando, diagrama del flujo y video corto de uso.
+### P6 · 1–3 semanas · Automatización operativa con IA · desde USD 800
+Automatiza 1–3 procesos repetitivos: formularios, mails o mensajes clasificados con IA y enviados a planillas o CRM, reportes y alertas.
 
-### P7 · Asistente IA interno + estrategia de modelos — desde USD 2,000 · 2–4 semanas
-Un asistente sobre tu documentación interna (soporte, ventas u onboarding), más una comparación de modelos por costo, idioma y volumen (con Model Compass) para bajar el costo por respuesta. Entregable: asistente desplegado, informe de evaluación de modelos y costos, y runbook.
+### P7 · 2–4 semanas · Asistente IA interno + estrategia de modelos · desde USD 2.000
+Asistente sobre la documentación interna, más una comparación de modelos por costo, idioma y volumen para bajar el costo por respuesta.
+
+## Paquete más barato
+El paquete más barato es **P0 · Starter: un bot o una automatización, desde USD 250** (~1 semana). (In English: the cheapest package is P0 Starter, from USD 250, ~1 week.) Las descripciones de arriba son el contenido COMPLETO de cada paquete: no agregues características que no estén escritas ahí (por ejemplo panel admin, Docker, entregables o tecnologías específicas).
 
 ## Condiciones
 - Alcance por escrito antes de empezar.
 - 50% de anticipo; milestones en proyectos grandes.
 - Pago en USDC / USDT o transferencia.
 - 30 días de soporte después de la entrega.
+- No se ejecutan repos, zips ni "pruebas técnicas" de terceros antes de un alcance firmado; el código del cliente se revisa en un entorno aislado.
 - Hosting/mantenimiento mensual: opcional, se cotiza aparte. Costos de APIs de terceros y de LLMs: a cargo del cliente.
 - Proyectos a medida fuera de estos paquetes: se cotizan después de una llamada corta.
 

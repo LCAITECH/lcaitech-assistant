@@ -48,3 +48,23 @@ def test_faq_never_has_phone_or_hourly_rate():
     for intent, (es, en) in faq.ANSWERS.items():
         for t in (es, en):
             assert "+54" not in t and "/h" not in t.replace("https://", "") and "por hora:" not in t.lower()
+
+
+@pytest.mark.parametrize("q,lang", [
+    ("cual es el paquete mas barato", "es"),
+    ("¿Cuál es el paquete más barato?", "es"),
+    ("¿Cuál es el servicio más económico?", "es"),
+    ("What is the cheapest package?", "en"),
+    ("cheapest option?", "en"),
+])
+def test_cheapest_is_p0(q, lang):
+    hit = faq.match(q, lang)
+    assert hit and hit[1] == lang
+    assert "P0" in hit[0] and "USD 250" in hit[0]
+    assert "USD 600" not in hit[0] and "Docker" not in hit[0] and "admin" not in hit[0].lower()
+
+
+def test_faq_answers_have_no_invented_package_features():
+    for ans in faq.ANSWERS.values():
+        for t in ans.values():
+            assert "Discord opcional" not in t and "Discord optional" not in t and "panel admin" not in t.lower()
