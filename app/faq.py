@@ -15,16 +15,18 @@ PACKAGES_ES = """- **P0 Starter: un bot o una automatización**: desde USD 250 (
 - **P3 Onboarding & Referral Automation**: desde USD 1.200 (2–3 semanas)
 - **P4 AI Support Agent**: desde USD 1.500 (2–4 semanas)
 - **P5 Partner técnico part-time**: desde USD 1.500/mes
-- **P6 Automatización operativa con IA**: desde USD 800 (1–3 semanas)
-- **P7 Asistente IA interno + estrategia de modelos**: desde USD 2.000 (2–4 semanas)"""
+- **P6 Consultoría en automatización con IA**: desde USD 800 (1–3 semanas)
+- **P7 Consultoría: asistente de IA y estrategia de modelos**: desde USD 2.000 (2–4 semanas)
+- **P8 Bot de señales de trading con IA**: en desarrollo · paper trading en curso (todavía sin precio)"""
 PACKAGES_EN = """- **P0 Starter: one bot or one automation**: from USD 250 (~1 week)
 - **P1 Community Alert Bot**: from USD 600 (1–2 weeks)
 - **P2 Market Data API + Dashboard**: from USD 2,500 (3–5 weeks)
 - **P3 Onboarding & Referral Automation**: from USD 1,200 (2–3 weeks)
 - **P4 AI Support Agent**: from USD 1,500 (2–4 weeks)
 - **P5 Part-time technical partner**: from USD 1,500/month
-- **P6 AI operations automation**: from USD 800 (1–3 weeks)
-- **P7 Internal AI assistant + model strategy**: from USD 2,000 (2–4 weeks)"""
+- **P6 AI automation consulting**: from USD 800 (1–3 weeks)
+- **P7 AI assistant & model strategy consulting**: from USD 2,000 (2–4 weeks)
+- **P8 AI Trading Signal Bot**: in development · paper trading in progress (no price yet)"""
 
 ANSWERS: dict[str, dict[str, str]] = {
     "services": {

@@ -68,3 +68,30 @@ def test_faq_answers_have_no_invented_package_features():
     for ans in faq.ANSWERS.values():
         for t in ans.values():
             assert "Discord opcional" not in t and "Discord optional" not in t and "panel admin" not in t.lower()
+
+
+def test_p6_p7_p8_new_packages():
+    from app import prompt
+    for t in (faq.PACKAGES_ES, faq.PACKAGES_EN):
+        assert "P8" in t and "WhatsApp" not in t
+    assert "Consultoría en automatización con IA**: desde USD 800" in faq.PACKAGES_ES
+    assert "Consultoría: asistente de IA y estrategia de modelos**: desde USD 2.000" in faq.PACKAGES_ES
+    assert "AI automation consulting**: from USD 800" in faq.PACKAGES_EN
+    assert "AI assistant & model strategy consulting**: from USD 2,000" in faq.PACKAGES_EN
+    assert "paper trading en curso (todavía sin precio)" in faq.PACKAGES_ES
+    assert "paper trading in progress (no price yet)" in faq.PACKAGES_EN
+    p8_es = faq.PACKAGES_ES.split("P8", 1)[1]
+    p8_en = faq.PACKAGES_EN.split("P8", 1)[1]
+    assert "USD" not in p8_es and "USD" not in p8_en
+    assert "P8" in prompt.RULES and "NO tiene precio" in prompt.RULES and "WhatsApp" in prompt.RULES
+
+
+def test_knowledge_p8_no_price_and_p7_tools():
+    import pathlib
+    kb = pathlib.Path(__file__).resolve().parents[1].joinpath("knowledge/02_servicios.md").read_text(encoding="utf-8")
+    p8 = kb.split("### P8", 1)[1].split("###", 1)[0]
+    assert "SIN PRECIO" in p8 and "paper trading en curso" in p8 and "USD" not in p8
+    assert "no son asesoramiento financiero" in p8
+    assert "https://github.com/LCAITECH/model-compass" in kb and "LCA Web UI" in kb
+    assert "Reviso tus procesos y automatizo 1–3 tareas repetitivas" in kb
+    assert "Automatización operativa con IA" not in kb
