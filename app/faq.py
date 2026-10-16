@@ -73,6 +73,10 @@ ANSWERS: dict[str, dict[str, str]] = {
         "es": "El **bot demo** (https://t.me/lcaitech_demo_bot) es un bot público de Telegram en castellano e inglés: /precio btc, /ath eth, /feargreed, /whales btc (trades grandes en MEXC), /ask y /servicios. Cada respuesta muestra su fuente de datos. Es open source (https://github.com/LCAITECH/lcaitech-demo-bot) y corre 24/7 en una VM de Google Cloud. Es un demo técnico: no da señales ni consejos de inversión.",
         "en": "The **demo bot** (https://t.me/lcaitech_demo_bot) is a public Telegram bot in Spanish and English: /precio btc, /ath eth, /feargreed, /whales btc (large MEXC trades), /ask and /servicios. Every answer shows its data source. It's open source (https://github.com/LCAITECH/lcaitech-demo-bot) and runs 24/7 on a Google Cloud VM. It's a technical demo: no signals or investment advice.",
     },
+    "clients": {
+        "es": "Además de software, Leandro hace **producción de video**. Hay una sección de clientes en https://portfolio.lcaitech.com/#clients: cliente verificable **Ingeniería Gabriel Gomez SRL** (empresa industrial/de ingeniería; aprobó la publicación), con video institucional en 4K, reel vertical y videos de producto para MercadoLibre (p. ej. osciloscopios, detector de metales, ecosonda, cabina acústica, controlador de grupo electrógeno). Todavía no hay testimonio publicado. El video se cotiza caso por caso (no es un paquete P0–P8): escribile por el formulario del portfolio o a itech.lca@gmail.com.",
+        "en": "Besides software, Leandro also does **video production**. See the client work section at https://portfolio.lcaitech.com/#clients: verified client **Ingeniería Gabriel Gomez SRL** (industrial/engineering company; approved publishing), with a 4K institutional video, a vertical reel and MercadoLibre product videos (e.g. oscilloscopes, metal detector, echo sounder, acoustic cabin, generator controller). No client testimonial is published yet. Video is quoted case by case (not a P0–P8 package): use the portfolio contact form or email itech.lca@gmail.com.",
+    },
 }
 
 SUGGESTED = {
@@ -99,6 +103,7 @@ INTENTS: list[tuple[str, str]] = [
     ("ardc", r"\b(ardc|alto riesgo degens)\b"),
     ("certs", r"\b(certificad\w*|certificacion\w*|certifications?|certificates?|certified)\b"),
     ("demobot", r"\b(bot demo|demo bot|lcaitech demo bot|bot de prueba)\b"),
+    ("clients", r"\b(clientes?|clients?|referencias?|references?|testimoni\w*|testimonials?|reviews?|produccion de video|video production|videos? de (producto|clientes?)|trabajos? (de|para) clientes?|gabriel gomez|mercadolibre)\b"),
 ]
 _INTENT_RE = [(name, re.compile(rx)) for name, rx in INTENTS]
 _EN_WORDS = re.compile(r"\b(what|how|does|do|is|the|his|him|he|much|who|which|where|can|services?|hire|price|prices)\b")
@@ -145,7 +150,7 @@ def match(text: str, ui_lang: str) -> tuple[str, str] | None:
         hits = ["cheapest"]
     if "bot_price" in hits:
         hits = [h for h in hits if h not in ("prices", "demobot")]
-    specific = [h for h in hits if h in ("bot_price", "ath", "ardc", "demobot", "certs")]
+    specific = [h for h in hits if h in ("bot_price", "ath", "ardc", "demobot", "certs", "clients")]
     if specific and "prices" in hits and specific != ["bot_price"]:
         return None  # e.g. "price of ATH Intelligence API": not a canned topic, let the model answer
     if specific:  # a specific topic beats the generic "services"/"hire" wording

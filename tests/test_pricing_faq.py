@@ -95,3 +95,26 @@ def test_knowledge_p8_no_price_and_p7_tools():
     assert "https://github.com/LCAITECH/model-compass" in kb and "LCA Web UI" in kb
     assert "Reviso tus procesos y automatizo 1–3 tareas repetitivas" in kb
     assert "Automatización operativa con IA" not in kb
+
+
+@pytest.mark.parametrize("q,lang,needle", [
+    ("¿Tiene clientes o referencias?", "es", "#clients"),
+    ("What clients has he worked with?", "en", "#clients"),
+    ("¿Hace videos o producción de video?", "es", "video"),
+    ("Does he do video production?", "en", "video"),
+    ("¿Quién es Ingeniería Gabriel Gomez?", "es", "Gabriel Gomez"),
+])
+def test_faq_clients(q, lang, needle):
+    hit = faq.match(q, lang)
+    assert hit and needle in hit[0]
+    assert "testimon" not in hit[0].lower() or "no hay testimonio" in hit[0].lower() or "no client testimonial" in hit[0].lower()
+
+
+def test_faq_clients_no_fake_testimonial_or_price():
+    ans = faq.ANSWERS["clients"]
+    for t in ans.values():
+        assert "Gabriel Gomez" in t and "#clients" in t
+        assert "USD" not in t  # video has no package price
+        low = t.lower()
+        assert "dijo que" not in low and "⭐" not in t
+        assert "pendiente" in low or "not published yet" in low or "no hay testimonio" in low or "no client testimonial" in low

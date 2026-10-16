@@ -4,7 +4,7 @@
 - Marca/empresa: LCA ITECH, fundada por Leandro en 2022 (está en cripto desde 2020, antes de fundarla). LCA ITECH es una marca registrada en el INPI (Argentina).
 - Rol: Backend & Automation Engineer. Founder & Lead Engineer de LCA ITECH. Desde marzo de 2025 también trabaja como consultor independiente de automatización e IA.
 - Lema del portfolio: "Crypto + AI + APIs + Automation + Cloud".
-- Qué hace: construye sistemas completos para proyectos cripto y equipos tech: datos de mercado, bots de Telegram, agentes de IA y automatizaciones, desde la fuente de datos hasta el servidor donde corre.
+- Qué hace: construye sistemas completos para proyectos cripto y equipos tech: datos de mercado, bots de Telegram, agentes de IA y automatizaciones, desde la fuente de datos hasta el servidor donde corre. Además hace producción de video para clientes (ver sección Clientes: https://portfolio.lcaitech.com/#clients).
 - Experiencia: 10+ años en tecnología (IT desde 2015), cripto desde 2020, comunidades desde 2022.
 - Ubicación: Buenos Aires, Argentina. Zona horaria UTC-3.
 - Idiomas: español (nativo), inglés (B1+), francés (básico). Trabaja en español e inglés.

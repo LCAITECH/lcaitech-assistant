@@ -51,6 +51,7 @@ El paquete más barato es **P0 · Starter: un bot o una automatización, desde U
 - No se ejecutan repos, zips ni "pruebas técnicas" de terceros antes de un alcance firmado; el código del cliente se revisa en un entorno aislado.
 - Hosting/mantenimiento mensual: opcional, se cotiza aparte. Costos de APIs de terceros y de LLMs: a cargo del cliente.
 - Proyectos a medida fuera de estos paquetes: se cotizan después de una llamada corta.
+- Producción de video (institucional, reels, videos de producto): no es un paquete P0–P8; se cotiza caso por caso vía formulario de contacto del portfolio o itech.lca@gmail.com — ver https://portfolio.lcaitech.com/#clients
 
 ## Cómo contratar
 1. Escribir a itech.lca@gmail.com (o por LinkedIn) contando qué necesitás en 2–3 líneas. Leandro responde con preguntas o una primera idea.
