@@ -74,11 +74,11 @@ def test_clients_section_facts_no_testimonial():
     clients = open("knowledge/08_clientes.md", encoding="utf-8").read()
     assert "https://portfolio.lcaitech.com/#clients" in clients
     assert "Ingeniería Gabriel Gomez SRL" in clients
-    assert "PENDIENTE" in clients
-    assert "NUNCA digas que existe un testimonio" in clients
+    assert "Muy buenos trabajos Leandro, muy profesional!" in clients
+    assert "no inventes" in clients
     assert "4K" in clients and "MercadoLibre" in clients
     assert "NO** es uno de los paquetes" in clients
     from app.prompt import RULES
-    assert "#clients" in RULES and "PENDIENTE" in RULES
-    assert "NUNCA digas que existe un testimonio" in RULES
+    assert "#clients" in RULES and "muy profesional" in RULES
+    assert "no inventes otras reseñas" in RULES
     assert "NO es un paquete P0–P8" in RULES

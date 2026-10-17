@@ -8,7 +8,7 @@ Además de software, Leandro hace producción de video. La sección publicada en
   - Video institucional en 4K
   - Un reel vertical
   - Varios videos de producto para publicaciones de MercadoLibre (por ejemplo: osciloscopios, detector de metales, ecosonda, cabina acústica, controlador de grupo electrógeno)
-- **Testimonio / review: PENDIENTE.** Todavía no hay testimonio publicado ni texto de review aprobado. NUNCA digas que existe un testimonio, una reseña o una quote del cliente, ni inventes ni parafrasees una. Si preguntan por referencias o reviews, mostrá el trabajo en `#clients` y aclará que el testimonio todavía no está publicado.
+- **Reseña verificable (publicada):** Ingeniería Gabriel Gomez SRL comentó públicamente desde su cuenta de empresa en LinkedIn (17/10/2026): "Muy buenos trabajos Leandro, muy profesional!". Se ve en el portfolio (#clients) con link al comentario original (https://www.linkedin.com/feed/update/urn:li:activity:7517034273258917888/). Citá SOLO esta frase textual; no inventes ni agregues otras reseñas, métricas o resultados.
 
 ## Cómo hablar de clientes, referencias, portfolio o video
 Si preguntan por clientes, referencias, portfolio de clientes o trabajo de video, apuntá a la sección: https://portfolio.lcaitech.com/#clients (y resumí solo los hechos de arriba).

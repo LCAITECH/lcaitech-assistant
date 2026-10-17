@@ -107,7 +107,7 @@ def test_knowledge_p8_no_price_and_p7_tools():
 def test_faq_clients(q, lang, needle):
     hit = faq.match(q, lang)
     assert hit and needle in hit[0]
-    assert "testimon" not in hit[0].lower() or "no hay testimonio" in hit[0].lower() or "no client testimonial" in hit[0].lower()
+    assert "muy profesional" in hit[0].lower()
 
 
 def test_faq_clients_no_fake_testimonial_or_price():
@@ -117,4 +117,4 @@ def test_faq_clients_no_fake_testimonial_or_price():
         assert "USD" not in t  # video has no package price
         low = t.lower()
         assert "dijo que" not in low and "⭐" not in t
-        assert "pendiente" in low or "not published yet" in low or "no hay testimonio" in low or "no client testimonial" in low
+        assert "muy buenos trabajos leandro, muy profesional!" in low and "linkedin" in low
