@@ -118,3 +118,13 @@ def test_faq_clients_no_fake_testimonial_or_price():
         low = t.lower()
         assert "dijo que" not in low and "⭐" not in t
         assert "muy buenos trabajos leandro, muy profesional!" in low and "linkedin" in low
+
+
+def test_knowledge_lcagpt_under_evaluation_no_price():
+    import pathlib
+    kb = pathlib.Path(__file__).resolve().parents[1].joinpath("knowledge/03_proyectos.md").read_text(encoding="utf-8")
+    sec = kb.split("## LCA-GPT", 1)[1].split("\n## ", 1)[0]
+    assert "evaluando lanzarlo como suscripción" in sec and "SIN PRECIO" in sec
+    assert "USD" not in sec and "$" not in sec
+    for name in ("Gemini", "Claude", "OpenAI", "NVIDIA", "Arena"):
+        assert name in sec
