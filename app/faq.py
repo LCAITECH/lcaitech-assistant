@@ -9,7 +9,8 @@ from __future__ import annotations
 import re
 import unicodedata
 
-PACKAGES_ES = """- **P0 Starter: un bot o una automatización**: desde USD 250 (~1 semana)
+PACKAGES_ES = """- **S1–S3 bots chicos** (preguntas frecuentes, alertas de precio, moderación): USD 100–180 c/u (2–6 días); Pack Comunidad S1+S2+S3 USD 250–350
+- **P0 Starter: un bot o una automatización**: desde USD 250 (~1 semana)
 - **P1 Community Alert Bot**: desde USD 600 (1–2 semanas)
 - **P2 Market Data API + Dashboard**: desde USD 2.500 (3–5 semanas)
 - **P3 Onboarding & Referral Automation**: desde USD 1.200 (2–3 semanas)
@@ -18,7 +19,8 @@ PACKAGES_ES = """- **P0 Starter: un bot o una automatización**: desde USD 250 (
 - **P6 Consultoría en automatización con IA**: desde USD 800 (1–3 semanas)
 - **P7 Consultoría: asistente de IA y estrategia de modelos**: desde USD 2.000 (2–4 semanas)
 - **P8 Bot de señales de trading con IA**: en desarrollo · paper trading en curso (todavía sin precio)"""
-PACKAGES_EN = """- **P0 Starter: one bot or one automation**: from USD 250 (~1 week)
+PACKAGES_EN = """- **S1–S3 small bots** (FAQ, price alerts, moderation): USD 100–180 each (2–6 days); Community Pack S1+S2+S3 USD 250–350
+- **P0 Starter: one bot or one automation**: from USD 250 (~1 week)
 - **P1 Community Alert Bot**: from USD 600 (1–2 weeks)
 - **P2 Market Data API + Dashboard**: from USD 2,500 (3–5 weeks)
 - **P3 Onboarding & Referral Automation**: from USD 1,200 (2–3 weeks)
@@ -31,23 +33,23 @@ PACKAGES_EN = """- **P0 Starter: one bot or one automation**: from USD 250 (~1 w
 ANSWERS: dict[str, dict[str, str]] = {
     "services": {
         "es": "Leandro construye sistemas completos para proyectos cripto y equipos tech: datos de mercado y APIs, bots de Telegram, agentes de IA, automatizaciones y deploy en la nube. Paquetes (precios \"desde\", USD):\n"
-        + PACKAGES_ES + "\nEl precio final se cierra después de una llamada corta. Contale tu proyecto en 2–3 líneas a itech.lca@gmail.com.",
+        + PACKAGES_ES + "\nEl precio final se cierra por escrito (sin llamadas). Contale tu proyecto en 2–3 líneas a itech.lca@gmail.com o armalo en https://portfolio.lcaitech.com/#builder.",
         "en": "Leandro builds complete systems for crypto projects and tech teams: market data and APIs, Telegram bots, AI agents, automations and cloud deployment. Packages (\"from\" prices, USD):\n"
-        + PACKAGES_EN + "\nThe final price is agreed after a short call. Describe your project in 2–3 lines to itech.lca@gmail.com.",
+        + PACKAGES_EN + "\nThe final price is agreed in writing (no calls). Describe your project in 2–3 lines to itech.lca@gmail.com or build it at https://portfolio.lcaitech.com/#builder.",
     },
     "prices": {
         "es": "Leandro trabaja con paquetes de precio cerrado (no por hora). Precios \"desde\", en USD:\n" + PACKAGES_ES
-        + "\nCondiciones: alcance por escrito, 50% de anticipo (milestones en proyectos grandes), pago en USDC/USDT o transferencia y 30 días de soporte. Para una cotización, escribile a itech.lca@gmail.com.",
+        + "\nCondiciones: alcance por escrito, 50% de anticipo para empezar en todos los paquetes, incluidos S1–S3 (milestones en proyectos grandes), pago en USDC/USDT o transferencia y 30 días de soporte. Para una cotización, escribile a itech.lca@gmail.com.",
         "en": "Leandro works with fixed-price packages (not hourly). \"From\" prices in USD:\n" + PACKAGES_EN
-        + "\nTerms: written scope, 50% upfront (milestones on larger projects), payment in USDC/USDT or bank transfer, and 30 days of support. For a quote, email itech.lca@gmail.com.",
+        + "\nTerms: written scope, 50% upfront to start on every package, S1–S3 included (milestones on larger projects), payment in USDC/USDT or bank transfer, and 30 days of support. For a quote, email itech.lca@gmail.com.",
     },
     "bot_price": {
-        "es": "Para una comunidad, el paquete es **P1 Community Alert Bot**: bot de Telegram con alertas de precio, distancia al ATH, token unlocks, Fear & Greed, movimientos de ballenas y resumen diario. **Desde USD 600**, 1–2 semanas, con 30 días de soporte. El precio final se cotiza tras una llamada corta: escribile a itech.lca@gmail.com. Podés probar el bot demo: https://t.me/lcaitech_demo_bot",
-        "en": "For a community, the package is **P1 Community Alert Bot**: a Telegram bot with price alerts, distance to ATH, token unlocks, Fear & Greed, whale moves and a daily summary. **From USD 600**, 1–2 weeks, with 30 days of support. The final price is quoted after a short call: email itech.lca@gmail.com. Try the demo bot: https://t.me/lcaitech_demo_bot",
+        "es": "Para una comunidad hay dos caminos:\n- **Bots chicos S1–S3**: S1 preguntas frecuentes para Telegram (USD 100–150, 3–5 días), S2 alertas de precio (USD 100–150, 2–4 días), S3 moderación para Discord o Telegram (USD 120–180, 4–6 días). 2 módulos −15%; **Pack Comunidad** S1+S2+S3: USD 250–350.\n- **P1 Community Alert Bot**: bot de Telegram con alertas de precio, distancia al ATH, token unlocks, Fear & Greed, movimientos de ballenas y resumen diario, **desde USD 600** (1–2 semanas).\n50% de anticipo para empezar. Armalo en https://portfolio.lcaitech.com/#builder o escribile a itech.lca@gmail.com. Bot demo: https://t.me/lcaitech_demo_bot",
+        "en": "For a community there are two options:\n- **Small bots S1–S3**: S1 Telegram FAQ (USD 100–150, 3–5 days), S2 price alerts (USD 100–150, 2–4 days), S3 moderation for Discord or Telegram (USD 120–180, 4–6 days). Any 2 modules −15%; **Community Pack** S1+S2+S3: USD 250–350.\n- **P1 Community Alert Bot**: a Telegram bot with price alerts, distance to ATH, token unlocks, Fear & Greed, whale moves and a daily summary, **from USD 600** (1–2 weeks).\n50% upfront to start. Build it at https://portfolio.lcaitech.com/#builder or email itech.lca@gmail.com. Demo bot: https://t.me/lcaitech_demo_bot",
     },
     "cheapest": {
-        "es": "El paquete más barato es **P0 · Starter: un bot o una automatización**, **desde USD 250** (~1 semana): un bot de alertas básico para Telegram (precios, distancia al ATH, resumen diario) o un proceso repetitivo automatizado de punta a punta. Ideal para empezar a trabajar juntos. El precio final se cierra con alcance por escrito: escribile a itech.lca@gmail.com.",
-        "en": "The cheapest package is **P0 · Starter: one bot or one automation**, **from USD 250** (~1 week): a basic Telegram alert bot (prices, distance to ATH, daily summary) or one repetitive process automated end to end. Ideal to start working together. The final price is set with a written scope: email itech.lca@gmail.com.",
+        "es": "El paquete más barato es **P0 · Starter: un bot o una automatización**, **desde USD 250** (~1 semana): un bot de alertas básico para Telegram (precios, distancia al ATH, resumen diario) o un proceso repetitivo automatizado de punta a punta. Ideal para empezar a trabajar juntos. Si buscás algo más chico y puntual, están los bots chicos S1–S3 desde USD 100–150 (Pack Comunidad S1+S2+S3: USD 250–350). El precio final se cierra con alcance por escrito: escribile a itech.lca@gmail.com.",
+        "en": "The cheapest package is **P0 · Starter: one bot or one automation**, **from USD 250** (~1 week): a basic Telegram alert bot (prices, distance to ATH, daily summary) or one repetitive process automated end to end. Ideal to start working together. For something smaller, there are the S1–S3 small bots from USD 100–150 (Community Pack S1+S2+S3: USD 250–350). The final price is set with a written scope: email itech.lca@gmail.com.",
     },
     "ath": {
         "es": "**ATH Intelligence** (https://athintelligence.pro) es el producto propio de Leandro, online. Responde una pregunta: ¿puede un activo volver de verdad a su máximo histórico (ATH) después del supply que se emitió desde entonces? Guarda el market cap y el supply de cada ATH, puntúa cada activo con un **Recovery Score** determinista (distancia al ATH, inflación del supply y tamaño) y expone todo por una API REST. Hecho con Python, FastAPI, PostgreSQL, Docker y GCP. Es contexto, no consejo financiero.",
@@ -58,12 +60,12 @@ ANSWERS: dict[str, dict[str, str]] = {
         "en": "Leandro's contact:\n- Email: itech.lca@gmail.com (best channel for projects)\n- LinkedIn: https://www.linkedin.com/in/leandrobuchter\n- X: https://x.com/LCA_ITECH\n- GitHub: https://github.com/LCAITECH\n- Demo bot: https://t.me/lcaitech_demo_bot\nDescribe what you need in 2–3 lines.",
     },
     "hire": {
-        "es": "Así se trabaja con Leandro:\n- Escribile a itech.lca@gmail.com (o por LinkedIn) contando qué necesitás en 2–3 líneas.\n- Llamada corta y alcance por escrito, con precio cerrado.\n- 50% de anticipo (milestones en proyectos grandes); pago en USDC/USDT o transferencia.\n- Entrega + 30 días de soporte.\nNadie de LCA ITECH te va a pedir fondos por privado: los pagos se acuerdan siempre con alcance por escrito.",
-        "en": "How to work with Leandro:\n- Email itech.lca@gmail.com (or LinkedIn) describing what you need in 2–3 lines.\n- Short call and written scope, with a fixed price.\n- 50% upfront (milestones on larger projects); payment in USDC/USDT or bank transfer.\n- Delivery + 30 days of support.\nNobody from LCA ITECH will DM you asking for funds: payments are always agreed with a written scope.",
+        "es": "Así se trabaja con Leandro (todo por escrito, sin llamadas):\n- Escribile a itech.lca@gmail.com (o por LinkedIn) contando qué necesitás en 2–3 líneas, o armá el pedido en https://portfolio.lcaitech.com/#builder.\n- Alcance y precio cerrado por escrito.\n- 50% de anticipo para empezar, en todos los paquetes (milestones en proyectos grandes); pago en USDC/USDT o transferencia.\n- Entrega + 30 días de soporte.\nNadie de LCA ITECH te va a pedir fondos por privado: los pagos se acuerdan siempre con alcance por escrito.",
+        "en": "How to work with Leandro (all in writing, no calls):\n- Email itech.lca@gmail.com (or LinkedIn) describing what you need in 2–3 lines, or build the request at https://portfolio.lcaitech.com/#builder.\n- Written scope with a fixed price.\n- 50% upfront to start on every package (milestones on larger projects); payment in USDC/USDT or bank transfer.\n- Delivery + 30 days of support.\nNobody from LCA ITECH will DM you asking for funds: payments are always agreed with a written scope.",
     },
-    "ardc": {
-        "es": "**ARDC · Alto Riesgo Degens Club** (https://ardc.club) es una comunidad de habla hispana de cripto de alto riesgo, enfocada en trading de memecoins (Solana, BNB Chain, Base), que Leandro co-dirige con un socio. Primero el riesgo: antes de cada entrada se revisan liquidez, holders, permisos del contrato y liquidez bloqueada. Tiene un analizador de tokens gratuito con IA, un registro público de trades (ganadores y perdedores) y guías anti-scam. Esto no es asesoramiento financiero.",
-        "en": "**ARDC · Alto Riesgo Degens Club** (https://ardc.club) is a Spanish-speaking high-risk crypto community focused on memecoin trading (Solana, BNB Chain, Base), co-run by Leandro and a partner. Risk first: liquidity, holders, contract permissions and locked liquidity are checked before each entry. It has a free AI token analyzer, a public trade log (winners and losers) and anti-scam guides. This is not financial advice.",
+    "builder": {
+        "es": "El **armador de proyectos** (https://portfolio.lcaitech.com/#builder) arma tu pedido en 4 pasos:\n- 1. Elegí qué querés: bot para tu comunidad, automatizar tu negocio, asistente con IA o dashboard cripto.\n- 2. Prendé módulos y miralos funcionar en una demo simulada.\n- 3. Elegí plataforma y nivel de IA.\n- 4. Mirá el total estimado (con descuentos por combo; lo que no tiene precio publicado figura \"a cotizar\") y tocá \"Pedir este proyecto\" para completar el formulario.\n50% de anticipo para empezar.",
+        "en": "The **project builder** (https://portfolio.lcaitech.com/#builder) puts your request together in 4 steps:\n- 1. Pick what you want: community bot, business automation, AI assistant or crypto dashboard.\n- 2. Turn modules on and watch them work in a simulated demo.\n- 3. Choose platform and AI level.\n- 4. See the estimated total (with combo discounts; anything without a published price shows \"quote\") and tap \"Order this project\" to fill in the form.\n50% upfront to start.",
     },
     "certs": {
         "es": "Certificados verificables (Coursera):\n- **DeFi Specialization**, Duke University (2026)\n- **Google AI Professional Certificate** (2026)\n- **Google Cloud Generative AI Leader Professional Certificate** (programa de 5 cursos en Coursera, 2026; no es el examen de certificación de Google Cloud)\n- **IBM AI Foundations for Everyone** (2020)\n- **Google IT Support Professional Certificate** (2020)\nEn curso: IBM AI Engineering y Machine Learning for Trading. Links de verificación en https://portfolio.lcaitech.com",
@@ -88,6 +90,8 @@ SUGGESTED = {
     "how much is a telegram bot for my community": ("bot_price", "en"),
     "what is ath intelligence": ("ath", "en"),
     "how do i hire him": ("hire", "en"),
+    "como funciona el armador de proyectos": ("builder", "es"),
+    "how does the project builder work": ("builder", "en"),
 }
 
 _PRICE = r"\b(precios?|cuanto (cuesta|sale|cobra\w*|vale)|tarifas?|presupuesto|cotiza\w*|costo|price|prices|pricing|how much|cost|costs|rates?|quote)\b"
@@ -100,7 +104,7 @@ INTENTS: list[tuple[str, str]] = [
     ("ath", r"\b(ath intelligence|athintelligence|recovery score)\b"),
     ("contact", r"\b(contacto|contactar\w*|contactarlo|mail|email|e mail|correo|linkedin|contact|reach (him|you|leandro))\b"),
     ("hire", r"\b(contrat\w*|trabajar con (el|vos|leandro)|como se paga|formas? de pago|hire|hiring|work with (him|you|leandro)|payment terms?)\b"),
-    ("ardc", r"\b(ardc|alto riesgo degens)\b"),
+    ("builder", r"\b(armador|configurador|armar (mi|el|un) (bot|proyecto)|builder|build (my|a) (bot|project))\b"),
     ("certs", r"\b(certificad\w*|certificacion\w*|certifications?|certificates?|certified)\b"),
     ("demobot", r"\b(bot demo|demo bot|lcaitech demo bot|bot de prueba)\b"),
     ("clients", r"\b(clientes?|clients?|referencias?|references?|testimoni\w*|testimonials?|reviews?|produccion de video|video production|videos? de (producto|clientes?)|trabajos? (de|para) clientes?|gabriel gomez|mercadolibre)\b"),
@@ -150,7 +154,7 @@ def match(text: str, ui_lang: str) -> tuple[str, str] | None:
         hits = ["cheapest"]
     if "bot_price" in hits:
         hits = [h for h in hits if h not in ("prices", "demobot")]
-    specific = [h for h in hits if h in ("bot_price", "ath", "ardc", "demobot", "certs", "clients")]
+    specific = [h for h in hits if h in ("bot_price", "ath", "builder", "demobot", "certs", "clients")]
     if specific and "prices" in hits and specific != ["bot_price"]:
         return None  # e.g. "price of ATH Intelligence API": not a canned topic, let the model answer
     if specific:  # a specific topic beats the generic "services"/"hire" wording

@@ -8,16 +8,14 @@
 - 2022 · Funda LCA ITECH, su empresa/marca de desarrollo.
 - 2022 → hoy · Comunidad LCA Trading: trading y educación cripto en Telegram, X, Instagram, YouTube y Discord.
 - Luego → hoy · Bots de Telegram y automatización: empezó a automatizar la comunidad con bots de Telegram, integraciones con exchanges, flujos de referidos y alertas (Telegram Bot API, Python, APIs de exchanges).
-- Hoy · ARDC (Alto Riesgo Degens Club): co-dirige con un socio una comunidad cripto de alto riesgo enfocada en trading de memecoins, con chequeo de riesgo antes de cada entrada, registro público de trades y guías anti-scam.
 - Marzo 2025 → hoy · Consultor independiente de automatización e IA.
 - Hoy · IA, APIs y productos de datos: agentes con LLMs y ruteo de IA (LCA-GPT), la plataforma de datos ATH Intelligence (online), el proyecto open source Model Compass y el bot demo. Certificados de Google en IA en 2026 (Google AI Professional Certificate y Google Cloud Generative AI Leader Professional Certificate, ambos en Coursera).
 
 # Experiencia en comunidades cripto
-Está en cripto desde 2020. Desde 2022 lleva adelante la comunidad LCA Trading y hoy también co-dirige ARDC. Comparte contenido de cripto, trading e IA en X. Sabe qué pregunta la gente, cómo funcionan las estafas y qué necesitan los admins:
+Está en cripto desde 2020. Desde 2022 lleva adelante la comunidad LCA Trading. Comparte contenido de cripto, trading e IA en X. Sabe qué pregunta la gente, cómo funcionan las estafas y qué necesitan los admins:
 - Grupos de Telegram y Discord: moderación, onboarding y bots.
 - Educación cripto: spot, perpetuos, apalancamiento, fees y riesgo.
 - Programas de referidos de exchanges e integraciones con partners.
-- Trading de alto riesgo / memecoins con reglas de riesgo y chequeos anti-scam (ARDC).
 - Dashboards y alertas para miembros.
 - Contenido en X, Instagram y YouTube.
 

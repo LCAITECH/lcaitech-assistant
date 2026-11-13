@@ -82,3 +82,22 @@ def test_clients_section_facts_no_testimonial():
     assert "#clients" in RULES and "muy profesional" in RULES
     assert "no inventes otras reseñas" in RULES
     assert "NO es un paquete P0–P8" in RULES
+
+
+def test_small_bots_builder_and_terms():
+    assert "S1 · Bot de preguntas frecuentes para Telegram" in KB and "3–5 días" in KB
+    assert "S2 · Bot de alertas de precio" in KB and "2–4 días" in KB
+    assert "S3 · Bot de moderación para Discord o Telegram" in KB and "4–6 días" in KB
+    assert "USD 100–150" in KB and "USD 120–180" in KB and "USD 250–350" in KB
+    assert "15% de descuento" in KB and "Pack Comunidad" in KB
+    assert "Armador de proyectos" in KB and "#builder" in KB
+    assert "50% de anticipo SIEMPRE" in KB
+
+
+def test_no_ardc_n8n_or_calls():
+    from app.prompt import RULES
+
+    low = KB.lower()
+    assert "ardc" not in low and "n8n" not in low
+    assert "llamada corta" not in (KB + RULES).lower() and "short call" not in (KB + RULES).lower()
+    assert "NO hace llamadas ni videollamadas" in RULES

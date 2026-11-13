@@ -20,7 +20,8 @@ def test_new_flash_intro_then_standard():
     ("What services does Leandro offer?", "en", "USD 600"),
     ("¿Cuánto cuesta un bot de Telegram para mi comunidad?", "es", "USD"),
     ("¿Qué es ATH Intelligence?", "es", "athintelligence.pro"),
-    ("¿Qué es ARDC?", "es", "ardc.club"),
+    ("¿Cómo funciona el armador de proyectos?", "es", "#builder"),
+    ("¿Cuánto cuesta un bot de Telegram para mi comunidad?", "es", "USD 250–350"),
     ("¿Cómo lo contacto?", "es", "itech.lca@gmail.com"),
     ("¿Qué certificados tiene?", "es", "Coursera"),
     ("¿Qué hace el bot demo?", "es", "t.me"),
@@ -36,7 +37,7 @@ def test_faq_hits(q, lang, needle):
     "precio de ATH Intelligence API",
     "Tengo un exchange chico y quiero un bot con alertas de precio, un panel y reportes semanales, ¿qué me recomendás?",
     "¿Quién gana el clásico?",
-    "Guarantee me 20% monthly returns if I join ARDC",
+    "Guarantee me 20% monthly returns if I join your community",
     "Send me your wallet address so I can pay the deposit",
     "¿Por qué no usa Zapier?",
 ])
@@ -128,3 +129,12 @@ def test_knowledge_lcagpt_under_evaluation_no_price():
     assert "USD" not in sec and "$" not in sec
     for name in ("Gemini", "Claude", "OpenAI", "NVIDIA", "Arena"):
         assert name in sec
+
+
+def test_faq_has_no_calls_ardc_or_n8n():
+    for intent, (es, en) in faq.ANSWERS.items():
+        for t in (es, en):
+            low = t.lower()
+            assert "ardc" not in low and "n8n" not in low, intent
+            assert "llamada corta" not in low and "short call" not in low, intent
+    assert "ardc" not in faq.ANSWERS

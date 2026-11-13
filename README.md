@@ -12,7 +12,7 @@ Backend liviano en FastAPI que responde **solo** sobre Leandro, sus servicios, p
 - `GET /health` → proveedor, modelo principal y de respaldo, `accepting`.
 
 ### Velocidad (objetivo: primer texto < 2 s, respuesta completa < 5 s)
-1. **Respuestas instantáneas sin modelo** (`app/faq.py`): las preguntas sugeridas y las frecuentes (servicios, precios, bot para comunidad, ATH Intelligence, ARDC, certificados, contacto, cómo contratar, bot demo) se responden desde el servidor en milisegundos, con textos tomados de la base de conocimiento. Lo que necesita criterio (garantías, inversiones, pagos, "por qué no…", comparaciones) siempre va al modelo. El filtro anti-injection corre **antes**.
+1. **Respuestas instantáneas sin modelo** (`app/faq.py`): las preguntas sugeridas y las frecuentes (servicios, precios, bot para comunidad, ATH Intelligence, armador de proyectos, certificados, contacto, cómo contratar, bot demo) se responden desde el servidor en milisegundos, con textos tomados de la base de conocimiento. Lo que necesita criterio (garantías, inversiones, pagos, "por qué no…", comparaciones) siempre va al modelo. El filtro anti-injection corre **antes**.
 2. **Streaming** de punta a punta: el widget muestra el texto a medida que llega.
 3. **Modelo principal + respaldo con corte rápido** (`app/llm.py`):
    - principal `gemini-3.8-flash` en `global` (GA, el Flash más nuevo; *thinking* en `LOW`, el mínimo que admite);

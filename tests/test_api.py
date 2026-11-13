@@ -101,7 +101,7 @@ def test_injection_blocked_without_model_call(factory):
         assert r.status_code == 200
         assert "No puedo cambiar mis instrucciones" in r.json()["reply"], a
     assert spy.calls == 0
-    legit = ["¿Cuánto sale un bot de Telegram?", "¿Me repetís los precios de los paquetes?", "¿Qué reglas de riesgo usa ARDC?", "A partir de ahora, ¿está disponible?", "How do I hire Leandro?", "Me olvidé el mail de contacto"]
+    legit = ["¿Cuánto sale un bot de Telegram?", "¿Me repetís los precios de los paquetes?", "¿Cómo uso el armador de proyectos?", "A partir de ahora, ¿está disponible?", "How do I hire Leandro?", "Me olvidé el mail de contacto"]
     for q in legit:
         r = ask(c, q, ip="198.51.100.2")
         assert r.status_code == 200 and r.json()["source"] in ("faq", "llm"), q
