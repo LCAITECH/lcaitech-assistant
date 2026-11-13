@@ -5,9 +5,9 @@
 - X (Twitter): @LCA_ITECH — https://x.com/LCA_ITECH
 - Bot demo de Telegram: https://t.me/lcaitech_demo_bot
 - Portfolio: https://portfolio.lcaitech.com
-- Sitios de proyectos: https://athintelligence.pro · https://ardc.club
+- Sitio de proyecto: https://athintelligence.pro
 
-No hay teléfono ni WhatsApp públicos: el contacto es por email o por las redes de arriba. No se publican tiempos de respuesta garantizados.
+No hay teléfono ni WhatsApp públicos: el contacto es por email o por las redes de arriba, siempre por escrito. Leandro no hace llamadas ni videollamadas; las demos van por escrito o en video pregrabado. En el portfolio también están el formulario de contacto y el armador de proyectos (sección #builder). No se publican tiempos de respuesta garantizados.
 
 # Seguridad: nadie te va a pedir fondos
 Nadie de LCA ITECH te va a pedir fondos, tu seed phrase, claves privadas, "verificar tu wallet" ni pagos de "soporte" por mensaje privado. Si alguien que dice ser de LCA ITECH te pide algo de eso, es una estafa: no respondas, bloqueá y reportá. Los pagos de proyectos se acuerdan siempre con un alcance por escrito.

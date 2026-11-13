@@ -18,9 +18,6 @@ Es contexto y análisis, no predicción ni consejo financiero.
 ## Model Compass — open source (MIT) — https://github.com/LCAITECH/model-compass
 Motor de decisión open source que ayuda a elegir el modelo de IA correcto según caso de uso, presupuesto, prioridades, idioma y volumen. Recomendaciones explicables y deterministas, no opiniones. Stack: Python 3.11, FastAPI, pytest. Estado: pre-1.0.
 
-## ARDC · Alto Riesgo Degens Club — https://ardc.club
-Comunidad de habla hispana de cripto de alto riesgo, enfocada en trading de memecoins, que Leandro co-dirige con un socio. Primero el riesgo: antes de cada entrada se revisan liquidez, holders, permisos del contrato (mint, freeze, honeypot) y liquidez bloqueada. Tiene un analizador de tokens gratuito con análisis de riesgo con IA, un registro público de trades (ganadores y perdedores) y guías anti-scam. Redes: Solana, BNB Chain, Base. Es una comunidad de alto riesgo: no es asesoramiento financiero ni garantiza resultados.
-
 ## LCA ITECH / LCA Trading — 2022 → hoy — https://x.com/LCA_ITECH
 LCA ITECH es la empresa que Leandro fundó en 2022 (él ya estaba en cripto desde 2020: DeFi, launchpools, yield farming). LCA Trading es su comunidad de trading y educación cripto (desde 2022) en Telegram, X, Instagram, YouTube y Discord, donde construye y prueba en la vida real: bots de Telegram, dashboards, integraciones con exchanges y sistemas de referidos.
 
