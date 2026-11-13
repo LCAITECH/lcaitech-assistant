@@ -101,3 +101,14 @@ def test_no_ardc_n8n_or_calls():
     assert "ardc" not in low and "n8n" not in low
     assert "llamada corta" not in (KB + RULES).lower() and "short call" not in (KB + RULES).lower()
     assert "NO hace llamadas ni videollamadas" in RULES
+
+
+def test_builder_v2_modules_cases_and_rules():
+    sec = KB[KB.index("## Armador de proyectos"):KB.index("## Paquete más barato")]
+    for x in ("formularios a tu planilla o CRM", "avisos por Telegram o mail", "derivación a un humano", "Model Compass",
+              "tu propia API REST", "Casos reales", "#templates", "Ingeniería Gabriel Gomez SRL", "ⓘ",
+              "el S2 se apaga solo", "SOLO para los bots chicos S1–S3", "\"A cotizar\"** significa"):
+        assert x in sec, x
+    low = sec.lower()
+    assert "no se ofrecen bots ni integraciones de whatsapp" in low
+    assert "ardc" not in low and "n8n" not in low and "llamada" not in low.replace("sin llamadas", "")
