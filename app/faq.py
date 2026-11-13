@@ -80,6 +80,8 @@ SUGGESTED = {
     "how much is a telegram bot for my community": ("bot_price", "en"),
     "what is ath intelligence": ("ath", "en"),
     "how do i hire him": ("hire", "en"),
+    "como funciona el armador de proyectos": ("builder", "es"),
+    "how does the project builder work": ("builder", "en"),
 }
 
 _PRICE = r"\b(precios?|cuanto (cuesta|sale|cobra\w*|vale)|tarifas?|presupuesto|cotiza\w*|costo|price|prices|pricing|how much|cost|costs|rates?|quote)\b"
